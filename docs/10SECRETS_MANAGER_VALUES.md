@@ -16,7 +16,7 @@ Create this first for the EC2 + RDS deployment:
   "DATABASE_URL": "postgresql://safetrace:<rds-password>@<rds-endpoint>:5432/safetrace",
   "JWT_SECRET": "<output-of-openssl-rand-base64-48>",
   "AWS_REGION": "us-east-1",
-  "FRONTEND_PUBLIC_URL": "http://<ec2-public-ip-or-domain>:3000",
+  "FRONTEND_PUBLIC_URL": "http://<alb-dns-name-or-domain>",
   "RESEND_API_KEY": "re_xxxxxxxxxxxxxxxxx",
   "RESEND_FROM_EMAIL": "verify@<your-verified-domain>",
   "AUTH_VERIFICATION_TTL_MINUTES": "10",

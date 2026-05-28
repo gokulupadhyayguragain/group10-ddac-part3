@@ -78,8 +78,8 @@ Note: for AZ-fault tolerance create a NAT Gateway in each public subnet (one per
    - Inbound: HTTP 80 and/or HTTPS 443 from `0.0.0.0/0` (or restricted CIDR)
    - Outbound: allow default (or restrict to `app-sg`)
 3. Create `app-sg` (VPC `my-vpc`):
-   - Inbound: allow HTTP (app port) from `alb-sg` (use Security group reference)
-   - Outbound: allow TCP 5432 to `rds-sg` (security-group reference)
+   - Inbound: allow HTTP `80` from `alb-sg` only (use a security group reference)
+   - Outbound: allow TCP `443` to the internet through NAT for bootstrap/API calls, and TCP `5432` to `rds-sg`
 4. Create `rds-sg` (VPC `my-vpc`):
    - Inbound: allow TCP 5432 from `app-sg` only
    - Outbound: leave default or restrict as required
@@ -112,8 +112,8 @@ Note: for AZ-fault tolerance create a NAT Gateway in each public subnet (one per
 
 ## 10) Create Target Group for the application
 1. Open the EC2 console → under **Load Balancing** choose **Target Groups** → **Create target group**.
-2. Choose target type **Instances** (or IP if preferred), protocol HTTP, port (e.g. 80), and VPC `my-vpc`.
-3. Health checks: Protocol HTTP and path `/health` (adjust to your app). Set intervals/thresholds.
+2. Choose target type **Instances**, protocol HTTP, port `80`, and VPC `my-vpc`.
+3. Health checks: Protocol HTTP and path `/api/health`. Set success code matcher `200`.
 4. Name the target group `my-app-tg` and create.
 
 ## 11) Create Application Load Balancer (ALB)
@@ -143,7 +143,8 @@ Note: for AZ-fault tolerance create a NAT Gateway in each public subnet (one per
 5. Key pair: select if you need SSH access (optional if using SSM only).
 6. Network settings: assign no public IP (instances run in privateapp subnets). Attach security group `app-sg`.
 7. IAM Instance Profile: select the instance role `EC2AppRole` created earlier.
-8. Advanced details: paste `User data` bootstrap script that installs the app, the AWS SDK, and reads DB credentials from Secrets Manager using the instance role.
+8. Advanced details: paste `User data` bootstrap script that installs the app and reads DB credentials from Secrets Manager using the instance role.
+   - If instances are in private app subnets, those subnets must route `0.0.0.0/0` to NAT Gateway. Without NAT, user data cannot install packages, clone GitHub, pull Docker images, or run npm builds.
 9. Create the launch template.
 
 ## 14) Create Auto Scaling Group (ASG) and attach to Target Group
@@ -160,7 +161,7 @@ Note: for AZ-fault tolerance create a NAT Gateway in each public subnet (one per
 1. ALB → Target Groups → select `my-app-tg` → check **Targets** to confirm instances register and show healthy.
 2. RDS → Databases → select `mydb` → note the endpoint.
 3. Open an SSM Session Manager session to one of the app instances (IAM/SSM must be configured), and test DB connectivity with `psql` using the Secret's credentials.
-4. Access the ALB DNS name in a browser to hit the app; confirm `/health` returns healthy.
+4. Access the ALB DNS name in a browser to hit the app; confirm `/api/health` returns healthy through the ALB.
 5. Test AZ failover scenarios carefully (stop instances in one AZ) and observe traffic shifting and DB Multi-AZ failover only in a controlled test.
 
 ## 16) Backups, monitoring and logging

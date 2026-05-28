@@ -61,11 +61,11 @@ inbound:
   HTTP 80 from 0.0.0.0/0
   HTTPS 443 from 0.0.0.0/0 optional
 outbound:
-  TCP 3000 to app-sg
+  TCP 80 to app-sg
 
 app-sg
 inbound:
-  TCP 3000 from alb-sg
+  TCP 80 from alb-sg
 outbound:
   TCP 443 to 0.0.0.0/0
   TCP 5432 to rds-sg
@@ -195,7 +195,7 @@ Policy:
 my-app-tg
 target type: Instances
 protocol: HTTP
-port: 3000
+port: 80
 VPC: my-vpc
 health check path: /api/health
 matcher: 200
@@ -249,6 +249,8 @@ git pull || true
 cat > .env <<'EOF'
 AWS_REGION=us-east-1
 SAFETRACE_SECRET_ID=safetrace/prod/app
+FRONTEND_PORT=80
+BACKEND_PORT=5000
 EOF
 
 docker compose up --build -d

@@ -17,6 +17,9 @@ echo "=========================================="
 echo "Starting SafeTrace Provisioning..."
 echo "=========================================="
 
+# Private app subnets must have NAT Gateway routing for this script. It reaches
+# yum repos, GitHub, Docker Hub, and npm while building the containers.
+
 # 1. Update System Packages
 echo "Updating packages..."
 yum update -y
@@ -60,6 +63,8 @@ cat << 'EOF' > "$ENV_FILE"
 # ------------------------------------------------------------------------------
 AWS_REGION=us-east-1
 SAFETRACE_SECRET_ID=safetrace/prod/app
+FRONTEND_PORT=80
+BACKEND_PORT=5000
 EOF
 
 chown ec2-user:ec2-user "$ENV_FILE"
@@ -85,5 +90,6 @@ done
 
 echo "=========================================="
 echo "SafeTrace Provisioning Complete!"
-echo "App is running at: http://<EC2-PUBLIC-IP>:3000"
+echo "App is reachable through the ALB DNS name on HTTP 80 or HTTPS 443."
+echo "On the instance: frontend http://localhost and backend http://localhost:5000/api/health"
 echo "=========================================="

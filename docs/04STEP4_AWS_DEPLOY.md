@@ -59,7 +59,7 @@ When launching a new EC2 instance, paste the contents of `aws-user-data.sh` into
 
 ### Option B: Manual Setup
 1. Launch an EC2 instance running **Amazon Linux 2023** (t2.micro / t3.micro).
-2. Configure the Security Group (`safetrace-ec2-sg`) to allow **HTTP (80)** and **Custom TCP (3000)** from the public Internet, and **Custom TCP (5000)** only if direct API access is required.
+2. If using an ALB, attach an app security group that allows **HTTP 80 only from `alb-sg`**. Do not open port `3000` or `5000` to the public Internet.
 3. Log in to the instance via SSH:
    ```bash
    ssh -i your-key.pem ec2-user@your-ec2-ip
@@ -94,6 +94,7 @@ When launching a new EC2 instance, paste the contents of `aws-user-data.sh` into
    nano .env
    ```
    *For Task 1 production, set only `AWS_REGION` and `SAFETRACE_SECRET_ID` in `.env`. Keep the full runtime JSON in AWS Secrets Manager using `docs/10SECRETS_MANAGER_VALUES.md`. Leave Task 2 values such as `S3_BUCKET`, `SQS_QUEUE_URL`, and `SNS_TOPIC_ARN` out of the secret until the serverless extension is deployed.*
+   For ALB deployment, also set `FRONTEND_PORT=80` so Docker maps the frontend container to the EC2 host's port 80.
 3. Run the containers:
    ```bash
    docker compose up --build -d
@@ -104,4 +105,5 @@ When launching a new EC2 instance, paste the contents of `aws-user-data.sh` into
    ```
 5. Confirm the deployment:
    - Hit the health endpoint: `curl -fsS http://localhost:5000/api/health`
-   - Access the web interface at `http://<EC2-PUBLIC-IP>:3000`
+   - Check the ALB-facing frontend path on the instance: `curl -fsS http://localhost/api/health`
+   - Access the web interface at `http://<ALB-DNS-NAME>`

@@ -47,7 +47,7 @@ Browser
 -> ALB
 -> EC2 private app instance
 -> Docker Compose
--> frontend container on 3000
+-> EC2 host port 80 mapped to frontend container on 3000
 -> backend container on 5000
 -> RDS PostgreSQL in private DB subnet
 ```

@@ -133,10 +133,11 @@ Capture these screenshots for the final report:
 
 ## 7. Optional Nginx and HTTPS
 
-For a cleaner public URL, put Nginx on EC2 in front of the containers:
+For a cleaner public URL, use the ALB in front of the containers:
 
-- forward `/` to frontend port `3000`
-- forward `/api/` to backend port `5000`
-- use Certbot or an ACM-backed load balancer for HTTPS
+- ALB listener `80/443` forwards to target group port `80`
+- Docker maps EC2 host port `80` to the frontend container port `3000`
+- The Next.js frontend proxies `/api/*` to the backend container on `5000`
+- Use ACM on the ALB for HTTPS
 
 This is optional for coursework, but it makes the public demo URL cleaner and avoids exposing raw container ports.

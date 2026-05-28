@@ -352,7 +352,8 @@ The target group is where the ALB sends requests.
 - Protocol: HTTP
 - Port: 80
 - VPC: `my-vpc`
-- Health check path: `/health` (or your app’s actual health endpoint)
+- Health check path: `/api/health`
+- Success code matcher: `200`
 - Name: `my-app-tg`
 - Create
 
@@ -432,6 +433,7 @@ Part 15 — Create the launch template
 - Network settings: no public IP
 - Security groups: `app-sg`
 - IAM instance profile: `EC2AppRole` or `LabInstanceProfile`
+- Private app subnets must have a default route to NAT Gateway. Without NAT, user data cannot install packages, clone GitHub, pull Docker images, or build npm dependencies.
 
 3) Add user data for application bootstrapping
 Example user data:
