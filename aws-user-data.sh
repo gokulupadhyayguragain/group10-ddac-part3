@@ -41,9 +41,8 @@ ln -sf /usr/local/lib/docker/cli-plugins/docker-compose /usr/bin/docker-compose
 usermod -aG docker ec2-user
 
 # 6. Clone SafeTrace Repository
-# NOTE: Replace the repository URL below with your actual repository URL
 REPO_DIR="/home/ec2-user/safetrace"
-git clone https://github.com/gocools/ddac.git "$REPO_DIR" || {
+git clone https://github.com/gokulupadhyayguragain/group10-ddac-part3.git "$REPO_DIR" || {
     echo "Git clone failed or repo already exists. Pulling latest..."
     cd "$REPO_DIR" && git pull
 }
@@ -53,7 +52,7 @@ chown -R ec2-user:ec2-user "$REPO_DIR"
 # The production .env contains only the non-secret bootstrap pointer. Store the
 # full SafeTrace runtime JSON in AWS Secrets Manager under this secret id.
 echo "Setting up production bootstrap environment variables..."
-ENV_FILE="$REPO_DIR/code/.env"
+ENV_FILE="$REPO_DIR/.env"
 
 cat << 'EOF' > "$ENV_FILE"
 # ------------------------------------------------------------------------------
@@ -68,7 +67,7 @@ chmod 600 "$ENV_FILE"
 
 # 8. Run App Containers
 echo "Launching SafeTrace Docker Compose containers..."
-cd "$REPO_DIR/code"
+cd "$REPO_DIR"
 docker compose up --build -d
 
 # 9. Seed Demo/Initial Database Data

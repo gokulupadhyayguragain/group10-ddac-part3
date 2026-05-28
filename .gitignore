@@ -4,6 +4,10 @@
 **/coverage/
 **/test-results/
 **/playwright-report/
+**/.turbo/
+build/
+*.zip
+function.zip
 *.log
 .env
 .env.*

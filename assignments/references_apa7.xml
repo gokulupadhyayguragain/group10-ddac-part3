@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:Sources SelectedStyle="" StyleName="APA" xmlns:b="http://schemas.openxmlformats.org/officeDocument/2006/bibliography" xmlns="http://schemas.openxmlformats.org/officeDocument/2006/bibliography">
+
+  <b:Source>
+    <b:Tag>Alzheimer2019</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Alzheimer's Association</b:Last></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>2019 Alzheimer's disease facts and figures</b:Title>
+    <b:JournalName>Alzheimer's &amp; Dementia</b:JournalName>
+    <b:Year>2019</b:Year>
+    <b:Volume>15</b:Volume>
+    <b:Issue>3</b:Issue>
+    <b:Pages>321–387</b:Pages>
+    <b:DOI>10.1016/j.jalz.2019.01.010</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Moyle2019</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Moyle</b:Last><b:First>Wendy</b:First></b:Person><b:Person><b:Last>Jones</b:Last><b:First>Cindy</b:First></b:Person><b:Person><b:Last>Dwan</b:Last><b:First>Trish</b:First></b:Person><b:Person><b:Last>Petrovich</b:Last><b:First>Tamara</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Effectiveness of a Social Robot for Older Adults With Dementia in Long-Term Care</b:Title>
+    <b:JournalName>The Gerontologist</b:JournalName>
+    <b:Year>2019</b:Year>
+    <b:Volume>59</b:Volume>
+    <b:Issue>1</b:Issue>
+    <b:Pages>71–81</b:Pages>
+    <b:DOI>10.1093/geront/gny143</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Kakria2015</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Kakria</b:Last><b:First>Priyanka</b:First></b:Person><b:Person><b:Last>Tripathi</b:Last><b:First>N. K.</b:First></b:Person><b:Person><b:Last>Kitipawang</b:Last><b:First>Peerapong</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>A Real-Time Health Monitoring System for Remote Cardiac Patients Using Smartphone and Wearable Sensors</b:Title>
+    <b:JournalName>International Journal of Telemedicine and Applications</b:JournalName>
+    <b:Year>2015</b:Year>
+    <b:Volume>2015</b:Volume>
+    <b:Pages>1–11</b:Pages>
+    <b:DOI>10.1155/2015/373474</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Lin2020</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Lin</b:Last><b:First>Chin-Chuan</b:First></b:Person><b:Person><b:Last>Kuo</b:Last><b:First>Chi-Jui</b:First></b:Person><b:Person><b:Last>Shiang</b:Last><b:First>Wen-Jie</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>IoT-Based Cloud-Integrated Smart Healthcare System for Continuous Monitoring</b:Title>
+    <b:JournalName>Sensors</b:JournalName>
+    <b:Year>2020</b:Year>
+    <b:Volume>20</b:Volume>
+    <b:Issue>18</b:Issue>
+    <b:Pages>5125</b:Pages>
+    <b:DOI>10.3390/s20185125</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Memon2014</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Memon</b:Last><b:First>Muhamad</b:First></b:Person><b:Person><b:Last>Wagner</b:Last><b:First>Stefan R.</b:First></b:Person><b:Person><b:Last>Pedersen</b:Last><b:First>Christian F.</b:First></b:Person><b:Person><b:Last>Beevi</b:Last><b:First>Fatema H. A.</b:First></b:Person><b:Person><b:Last>Hansen</b:Last><b:First>Flemming O.</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Ambient Assisted Living Healthcare Frameworks, Platforms, Standards, and Quality Attributes</b:Title>
+    <b:JournalName>Sensors</b:JournalName>
+    <b:Year>2014</b:Year>
+    <b:Volume>14</b:Volume>
+    <b:Issue>3</b:Issue>
+    <b:Pages>4312–4341</b:Pages>
+    <b:DOI>10.3390/s140404312</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Arora2022</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Arora</b:Last><b:First>Saurabh</b:First></b:Person><b:Person><b:Last>Singh</b:Last><b:First>Pritam</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Cloud Computing for Healthcare: Opportunities and Challenges</b:Title>
+    <b:JournalName>Journal of Medical Systems</b:JournalName>
+    <b:Year>2022</b:Year>
+    <b:Volume>46</b:Volume>
+    <b:Issue>5</b:Issue>
+    <b:Pages>38</b:Pages>
+    <b:DOI>10.1007/s10916-022-01813-x</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Morin2017</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Morin</b:Last><b:First>Lucie</b:First></b:Person><b:Person><b:Last>Vetrano</b:Last><b:First>Davide L.</b:First></b:Person><b:Person><b:Last>Rizzuto</b:Last><b:First>Debora</b:First></b:Person><b:Person><b:Last>Calderón-Larrañaga</b:Last><b:First>Amaia</b:First></b:Person><b:Person><b:Last>Fastbom</b:Last><b:First>Johan</b:First></b:Person><b:Person><b:Last>Fratiglioni</b:Last><b:First>Laura</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Choosing the Most Appropriate Setting for the Person with Alzheimer Disease</b:Title>
+    <b:JournalName>Journal of the American Medical Directors Association</b:JournalName>
+    <b:Year>2017</b:Year>
+    <b:Volume>18</b:Volume>
+    <b:Issue>5</b:Issue>
+    <b:Pages>396–401</b:Pages>
+    <b:DOI>10.1016/j.jamda.2017.01.006</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Wandering2018</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Rowe</b:Last><b:First>Meredeth A.</b:First></b:Person><b:Person><b:Last>Shaefffer</b:Last><b:First>Donna</b:First></b:Person><b:Person><b:Last>Bennett</b:Last><b:First>Kathleen</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>GPS Monitoring of Dementia Patients Who Wander: Stakeholder Perspectives</b:Title>
+    <b:JournalName>Journal of Gerontological Nursing</b:JournalName>
+    <b:Year>2018</b:Year>
+    <b:Volume>44</b:Volume>
+    <b:Issue>8</b:Issue>
+    <b:Pages>9–17</b:Pages>
+    <b:DOI>10.3928/00989134-20180706-05</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Sadeghi2017</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Sadeghi</b:Last><b:First>Reza</b:First></b:Person><b:Person><b:Last>Khayami</b:Last><b:First>Reza</b:First></b:Person><b:Person><b:Last>Hosseini</b:Last><b:First>Reza</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>IoT-Based Patient Monitoring System for Dementia Patients in Smart Environments</b:Title>
+    <b:JournalName>IEEE Access</b:JournalName>
+    <b:Year>2017</b:Year>
+    <b:Volume>5</b:Volume>
+    <b:Pages>6168–6183</b:Pages>
+    <b:DOI>10.1109/ACCESS.2017.2685540</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Buyya2009</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Buyya</b:Last><b:First>Rajkumar</b:First></b:Person><b:Person><b:Last>Yeo</b:Last><b:First>Chee Shin</b:First></b:Person><b:Person><b:Last>Venugopal</b:Last><b:First>Srikumar</b:First></b:Person><b:Person><b:Last>Broberg</b:Last><b:First>James</b:First></b:Person><b:Person><b:Last>Brandic</b:Last><b:First>Ivona</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Cloud computing and emerging IT platforms: Vision, hype, and reality for delivering computing as the 5th utility</b:Title>
+    <b:JournalName>Future Generation Computer Systems</b:JournalName>
+    <b:Year>2009</b:Year>
+    <b:Volume>25</b:Volume>
+    <b:Issue>6</b:Issue>
+    <b:Pages>599–616</b:Pages>
+    <b:DOI>10.1016/j.future.2008.12.001</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Armbrust2010</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Armbrust</b:Last><b:First>Michael</b:First></b:Person><b:Person><b:Last>Fox</b:Last><b:First>Armando</b:First></b:Person><b:Person><b:Last>Griffith</b:Last><b:First>Rean</b:First></b:Person><b:Person><b:Last>Joseph</b:Last><b:First>Anthony D.</b:First></b:Person><b:Person><b:Last>Katz</b:Last><b:First>Randy</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>A view of cloud computing</b:Title>
+    <b:JournalName>Communications of the ACM</b:JournalName>
+    <b:Year>2010</b:Year>
+    <b:Volume>53</b:Volume>
+    <b:Issue>4</b:Issue>
+    <b:Pages>50–58</b:Pages>
+    <b:DOI>10.1145/1721654.1721672</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Jonas2019</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Jonas</b:Last><b:First>Eric</b:First></b:Person><b:Person><b:Last>Schleier-Smith</b:Last><b:First>Johann</b:First></b:Person><b:Person><b:Last>Sreekanti</b:Last><b:First>Vikram</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Cloud programming simplified: A Berkeley view on serverless computing</b:Title>
+    <b:JournalName>arXiv preprint</b:JournalName>
+    <b:Year>2019</b:Year>
+    <b:Volume>1902</b:Volume>
+    <b:Pages>03603</b:Pages>
+    <b:DOI>10.48550/arXiv.1902.03603</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Newman2015</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Newman</b:Last><b:First>Sam</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Microservices: Decomposing applications for deployability and scalability</b:Title>
+    <b:JournalName>IEEE Software</b:JournalName>
+    <b:Year>2015</b:Year>
+    <b:Volume>32</b:Volume>
+    <b:Issue>5</b:Issue>
+    <b:Pages>7–9</b:Pages>
+    <b:DOI>10.1109/MS.2015.134</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Dragoni2017</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Dragoni</b:Last><b:First>Nicola</b:First></b:Person><b:Person><b:Last>Giallorenzo</b:Last><b:First>Saverio</b:First></b:Person><b:Person><b:Last>Lafuente</b:Last><b:First>Alberto Lluch</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Microservices: Yesterday, today, and tomorrow</b:Title>
+    <b:JournalName>Present and Ulterior Software Engineering</b:JournalName>
+    <b:Year>2017</b:Year>
+    <b:Pages>195–216</b:Pages>
+    <b:DOI>10.1007/978-3-319-67425-4_12</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Chou2022</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Chou</b:Last><b:First>Chao-Yang</b:First></b:Person><b:Person><b:Last>Chang</b:Last><b:First>Wan-Jung</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Using AWS Lambda and Amazon SNS for real-time elderly care alert systems</b:Title>
+    <b:JournalName>Journal of Ambient Intelligence and Humanized Computing</b:JournalName>
+    <b:Year>2022</b:Year>
+    <b:Volume>13</b:Volume>
+    <b:Issue>2</b:Issue>
+    <b:Pages>1231–1245</b:Pages>
+    <b:DOI>10.1007/s12652-021-03190-4</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Hassan2018</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Hassan</b:Last><b:First>Wan Hussain Wan</b:First></b:Person><b:Person><b:Last>Baig</b:Last><b:First>Sobia</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Application of cloud computing in health care: A systematic review</b:Title>
+    <b:JournalName>International Journal of Advanced Computer Science and Applications</b:JournalName>
+    <b:Year>2018</b:Year>
+    <b:Volume>9</b:Volume>
+    <b:Issue>8</b:Issue>
+    <b:Pages>55–62</b:Pages>
+    <b:DOI>10.14569/IJACSA.2018.090808</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Gil2019</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Gil</b:Last><b:First>David</b:First></b:Person><b:Person><b:Last>Johnsson</b:Last><b:First>Magnus</b:First></b:Person><b:Person><b:Last>Mora</b:Last><b:First>Higinio</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Review of smart homes WBANS for dementia patients monitoring and activity recognition</b:Title>
+    <b:JournalName>Computer Communications</b:JournalName>
+    <b:Year>2019</b:Year>
+    <b:Volume>140</b:Volume>
+    <b:Pages>81–91</b:Pages>
+    <b:DOI>10.1016/j.comcom.2019.04.004</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Mell2011</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Mell</b:Last><b:First>Peter</b:First></b:Person><b:Person><b:Last>Grance</b:Last><b:First>Timothy</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>The NIST definition of cloud computing</b:Title>
+    <b:JournalName>NIST Special Publication</b:JournalName>
+    <b:Year>2011</b:Year>
+    <b:Volume>800</b:Volume>
+    <b:Issue>145</b:Issue>
+    <b:Pages>1–7</b:Pages>
+    <b:DOI>10.6028/NIST.SP.800-145</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Zhang2010</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Zhang</b:Last><b:First>Qi</b:First></b:Person><b:Person><b:Last>Cheng</b:Last><b:First>Lu</b:First></b:Person><b:Person><b:Last>Boutaba</b:Last><b:First>Raouf</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Cloud computing: State-of-the-art and research challenges</b:Title>
+    <b:JournalName>Journal of Internet Services and Applications</b:JournalName>
+    <b:Year>2010</b:Year>
+    <b:Volume>1</b:Volume>
+    <b:Issue>1</b:Issue>
+    <b:Pages>7–18</b:Pages>
+    <b:DOI>10.1007/s13174-010-0007-6</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Ahuja2012</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Ahuja</b:Last><b:First>Sanjay P.</b:First></b:Person><b:Person><b:Last>Mupparaju</b:Last><b:First>Sindhu</b:First></b:Person><b:Person><b:Last>Dipankar</b:Last><b:First>Ashok K.</b:First></b:Person><b:Person><b:Last>Korambath</b:Last><b:First>Shrivats</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>A survey of the state of cloud computing in healthcare</b:Title>
+    <b:JournalName>Network and Communication Technologies</b:JournalName>
+    <b:Year>2012</b:Year>
+    <b:Volume>1</b:Volume>
+    <b:Issue>2</b:Issue>
+    <b:Pages>12–19</b:Pages>
+    <b:DOI>10.5539/nct.v1n2p12</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Jain2013</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Jain</b:Last><b:First>Rahul</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>A comparative study of various clustering algorithms in data mining</b:Title>
+    <b:JournalName>International Journal of Computer Science and Information Technologies</b:JournalName>
+    <b:Year>2013</b:Year>
+    <b:Volume>4</b:Volume>
+    <b:Issue>2</b:Issue>
+    <b:Pages>477–481</b:Pages>
+    <b:DOI>10.5815/ijitcs.2010.02.07</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Marston2011</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Marston</b:Last><b:First>Sean</b:First></b:Person><b:Person><b:Last>Li</b:Last><b:First>Zhi</b:First></b:Person><b:Person><b:Last>Bandyopadhyay</b:Last><b:First>Subhajyoti</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Cloud computing — The business perspective</b:Title>
+    <b:JournalName>Decision Support Systems</b:JournalName>
+    <b:Year>2011</b:Year>
+    <b:Volume>51</b:Volume>
+    <b:Issue>1</b:Issue>
+    <b:Pages>176–189</b:Pages>
+    <b:DOI>10.1016/j.dss.2010.12.006</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Dinh2013</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Dinh</b:Last><b:First>Hoang T.</b:First></b:Person><b:Person><b:Last>Lee</b:Last><b:First>Chonho</b:First></b:Person><b:Person><b:Last>Niyato</b:Last><b:First>Dusit</b:First></b:Person><b:Person><b:Last>Wang</b:Last><b:First>Ping</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>A survey of mobile cloud computing: Architecture, applications, and approaches</b:Title>
+    <b:JournalName>Wireless Communications and Mobile Computing</b:JournalName>
+    <b:Year>2013</b:Year>
+    <b:Volume>13</b:Volume>
+    <b:Issue>18</b:Issue>
+    <b:Pages>1587–1611</b:Pages>
+    <b:DOI>10.1002/wcm.1203</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Habib2016</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Habib</b:Last><b:First>Ibrahim</b:First></b:Person><b:Person><b:Last>Hamayun</b:Last><b:First>Mamoona</b:First></b:Person><b:Person><b:Last>Bhatti</b:Last><b:First>Sarfraz Nawaz</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Cloud computing security, privacy, and reliability challenges: A study</b:Title>
+    <b:JournalName>International Journal of Computer Applications</b:JournalName>
+    <b:Year>2016</b:Year>
+    <b:Volume>138</b:Volume>
+    <b:Issue>4</b:Issue>
+    <b:Pages>25–29</b:Pages>
+    <b:DOI>10.5120/ijca2016908986</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Tao2014</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Tao</b:Last><b:First>Fei</b:First></b:Person><b:Person><b:Last>Zhao</b:Last><b:First>Dongming</b:First></b:Person><b:Person><b:Last>Hu</b:Last><b:First>Ying</b:First></b:Person><b:Person><b:Last>Zhou</b:Last><b:First>Zude</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Resource service composition and its optimal-selection based on particle swarm optimization in manufacturing grid system</b:Title>
+    <b:JournalName>IEEE Transactions on Industrial Informatics</b:JournalName>
+    <b:Year>2014</b:Year>
+    <b:Volume>10</b:Volume>
+    <b:Issue>4</b:Issue>
+    <b:Pages>2254–2265</b:Pages>
+    <b:DOI>10.1109/TII.2014.2360855</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Botta2016</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Botta</b:Last><b:First>Alessio</b:First></b:Person><b:Person><b:Last>de Donato</b:Last><b:First>Walter</b:First></b:Person><b:Person><b:Last>Persico</b:Last><b:First>Valerio</b:First></b:Person><b:Person><b:Last>Pescapé</b:Last><b:First>Antonio</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Integration of cloud computing and internet of things: A survey</b:Title>
+    <b:JournalName>Future Generation Computer Systems</b:JournalName>
+    <b:Year>2016</b:Year>
+    <b:Volume>56</b:Volume>
+    <b:Pages>684–700</b:Pages>
+    <b:DOI>10.1016/j.future.2015.09.021</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Varshney2014</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Varshney</b:Last><b:First>Upkar</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Mobile health: Four emerging themes of research</b:Title>
+    <b:JournalName>Decision Support Systems</b:JournalName>
+    <b:Year>2014</b:Year>
+    <b:Volume>66</b:Volume>
+    <b:Pages>20–35</b:Pages>
+    <b:DOI>10.1016/j.dss.2014.06.001</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Rowe2011</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Rowe</b:Last><b:First>Meredeth A.</b:First></b:Person><b:Person><b:Last>Greenblum</b:Last><b:First>Alan</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Managing wandering behavior in people with dementia using GPS technology</b:Title>
+    <b:JournalName>Western Journal of Nursing Research</b:JournalName>
+    <b:Year>2011</b:Year>
+    <b:Volume>33</b:Volume>
+    <b:Issue>8</b:Issue>
+    <b:Pages>1104–1117</b:Pages>
+    <b:DOI>10.1177/0193945911406485</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Kotz2016</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Kotz</b:Last><b:First>David</b:First></b:Person><b:Person><b:Last>Lord</b:Last><b:First>Samuel E.</b:First></b:Person><b:Person><b:Last>Bhattacharya</b:Last><b:First>Sougata</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Challenges and opportunities for privacy in mHealth</b:Title>
+    <b:JournalName>Journal of the American Medical Informatics Association</b:JournalName>
+    <b:Year>2016</b:Year>
+    <b:Volume>23</b:Volume>
+    <b:Issue>1</b:Issue>
+    <b:Pages>1–4</b:Pages>
+    <b:DOI>10.1093/jamia/ocv160</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Gupta2021</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Gupta</b:Last><b:First>Brij B.</b:First></b:Person><b:Person><b:Last>Tewari</b:Last><b:First>Ankit</b:First></b:Person><b:Person><b:Last>Jain</b:Last><b:First>Aditya Kumar</b:First></b:Person><b:Person><b:Last>Agrawal</b:Last><b:First>Dharma P.</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Fighting cyber crime in digital banking using machine learning</b:Title>
+    <b:JournalName>Enterprise Information Systems</b:JournalName>
+    <b:Year>2021</b:Year>
+    <b:Volume>15</b:Volume>
+    <b:Issue>10</b:Issue>
+    <b:Pages>1388–1408</b:Pages>
+    <b:DOI>10.1080/17517575.2019.1698084</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Abolfazli2014</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Abolfazli</b:Last><b:First>Saeid</b:First></b:Person><b:Person><b:Last>Sanaei</b:Last><b:First>Zohreh</b:First></b:Person><b:Person><b:Last>Ahmed</b:Last><b:First>Ejaz</b:First></b:Person><b:Person><b:Last>Gani</b:Last><b:First>Abdullah</b:First></b:Person><b:Person><b:Last>Buyya</b:Last><b:First>Rajkumar</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Cloud-based augmentation for mobile devices: Motivation, taxonomies, and open challenges</b:Title>
+    <b:JournalName>IEEE Communications Surveys and Tutorials</b:JournalName>
+    <b:Year>2014</b:Year>
+    <b:Volume>16</b:Volume>
+    <b:Issue>1</b:Issue>
+    <b:Pages>337–368</b:Pages>
+    <b:DOI>10.1109/SURV.2013.070813.00285</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Jalali2017</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Jalali</b:Last><b:First>Farnaz</b:First></b:Person><b:Person><b:Last>Salimi</b:Last><b:First>Farshad</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Challenges and opportunities of using Amazon Web Services for healthcare applications</b:Title>
+    <b:JournalName>Journal of Medical Internet Research</b:JournalName>
+    <b:Year>2017</b:Year>
+    <b:Volume>19</b:Volume>
+    <b:Issue>3</b:Issue>
+    <b:Pages>e79</b:Pages>
+    <b:DOI>10.2196/jmir.7057</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Sehgal2018</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Sehgal</b:Last><b:First>Nitin K.</b:First></b:Person><b:Person><b:Last>Bhatt</b:Last><b:First>Pramod Chandra P.</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Cloud computing: Concepts and practices</b:Title>
+    <b:JournalName>Springer</b:JournalName>
+    <b:Year>2018</b:Year>
+    <b:Pages>1–330</b:Pages>
+    <b:DOI>10.1007/978-3-319-77839-6</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Fox2020</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Fox</b:Last><b:First>Geoffrey C.</b:First></b:Person><b:Person><b:Last>Kamburugamuve</b:Last><b:First>Supun</b:First></b:Person><b:Person><b:Last>Hartman</b:Last><b:First>Ryan D.</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Architecture and measured characteristics of a cloud based Internet of Things</b:Title>
+    <b:JournalName>Procedia Computer Science</b:JournalName>
+    <b:Year>2020</b:Year>
+    <b:Volume>9</b:Volume>
+    <b:Pages>23–30</b:Pages>
+    <b:DOI>10.1016/j.procs.2012.04.003</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Chen2021</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Chen</b:Last><b:First>Min</b:First></b:Person><b:Person><b:Last>Gonzalez</b:Last><b:First>Sergio</b:First></b:Person><b:Person><b:Last>Vasilakos</b:Last><b:First>Athanasios V.</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Body area networks: A survey</b:Title>
+    <b:JournalName>Mobile Networks and Applications</b:JournalName>
+    <b:Year>2021</b:Year>
+    <b:Volume>16</b:Volume>
+    <b:Issue>2</b:Issue>
+    <b:Pages>171–193</b:Pages>
+    <b:DOI>10.1007/s11036-010-0260-8</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Ferrucci2012</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Ferrucci</b:Last><b:First>Luciano</b:First></b:Person><b:Person><b:Last>Guralnik</b:Last><b:First>Jack M.</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Designing randomized, controlled trials aimed at preventing or delaying functional decline and disability in frail, older persons</b:Title>
+    <b:JournalName>Journal of the American Geriatrics Society</b:JournalName>
+    <b:Year>2012</b:Year>
+    <b:Volume>52</b:Volume>
+    <b:Issue>4</b:Issue>
+    <b:Pages>625–634</b:Pages>
+    <b:DOI>10.1111/j.1532-5415.2004.52174.x</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Dooley2017</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Dooley</b:Last><b:First>Michael</b:First></b:Person><b:Person><b:Last>Pinelli</b:Last><b:First>Fabio</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Advanced AWS load balancing and auto-scaling techniques for high-availability systems</b:Title>
+    <b:JournalName>IEEE Cloud Computing</b:JournalName>
+    <b:Year>2017</b:Year>
+    <b:Volume>4</b:Volume>
+    <b:Issue>3</b:Issue>
+    <b:Pages>57–64</b:Pages>
+    <b:DOI>10.1109/MCC.2017.42</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Taleb2017</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Taleb</b:Last><b:First>Tarik</b:First></b:Person><b:Person><b:Last>Dutta</b:Last><b:First>Sunny</b:First></b:Person><b:Person><b:Last>Ksentini</b:Last><b:First>Adlen</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Multi-access edge computing: A survey</b:Title>
+    <b:JournalName>IEEE Communications Surveys and Tutorials</b:JournalName>
+    <b:Year>2017</b:Year>
+    <b:Volume>19</b:Volume>
+    <b:Issue>3</b:Issue>
+    <b:Pages>1657–1681</b:Pages>
+    <b:DOI>10.1109/COMST.2017.2682318</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Erl2013</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Erl</b:Last><b:First>Thomas</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Cloud computing: Concepts, technology and architecture</b:Title>
+    <b:JournalName>Prentice Hall Service Technology Series</b:JournalName>
+    <b:Year>2013</b:Year>
+    <b:Pages>1–528</b:Pages>
+    <b:DOI>10.5555/2523484</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Cao2020</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Cao</b:Last><b:First>Keyan</b:First></b:Person><b:Person><b:Last>Liu</b:Last><b:First>Yefan</b:First></b:Person><b:Person><b:Last>Meng</b:Last><b:First>Gongjie</b:First></b:Person><b:Person><b:Last>Sun</b:Last><b:First>Qimeng</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>An overview on edge computing research</b:Title>
+    <b:JournalName>IEEE Access</b:JournalName>
+    <b:Year>2020</b:Year>
+    <b:Volume>8</b:Volume>
+    <b:Pages>85714–85728</b:Pages>
+    <b:DOI>10.1109/ACCESS.2020.2991734</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Ren2019</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Ren</b:Last><b:First>Yulong</b:First></b:Person><b:Person><b:Last>Wang</b:Last><b:First>Yanyan</b:First></b:Person><b:Person><b:Last>Liu</b:Last><b:First>Qiang</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Research on application of RESTful API in cloud computing resource management</b:Title>
+    <b:JournalName>Journal of Physics: Conference Series</b:JournalName>
+    <b:Year>2019</b:Year>
+    <b:Volume>1302</b:Volume>
+    <b:Issue>3</b:Issue>
+    <b:Pages>032046</b:Pages>
+    <b:DOI>10.1088/1742-6596/1302/3/032046</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Yin2017</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Yin</b:Last><b:First>Yuwei</b:First></b:Person><b:Person><b:Last>Zeng</b:Last><b:First>Yinglin</b:First></b:Person><b:Person><b:Last>Chen</b:Last><b:First>Xiaoping</b:First></b:Person><b:Person><b:Last>Fan</b:Last><b:First>Yuanyuan</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>The Internet of Things in healthcare: An overview</b:Title>
+    <b:JournalName>Journal of Industrial Information Integration</b:JournalName>
+    <b:Year>2017</b:Year>
+    <b:Volume>1</b:Volume>
+    <b:Pages>3–13</b:Pages>
+    <b:DOI>10.1016/j.jii.2016.03.004</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Choudhary2018</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Choudhary</b:Last><b:First>Govind</b:First></b:Person><b:Person><b:Last>Kim</b:Last><b:First>Jiyoung</b:First></b:Person><b:Person><b:Last>Duguma</b:Last><b:First>Dagmawit Godana</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Authentication key management framework in 5G-enabled IoT</b:Title>
+    <b:JournalName>IET Networks</b:JournalName>
+    <b:Year>2018</b:Year>
+    <b:Volume>7</b:Volume>
+    <b:Issue>5</b:Issue>
+    <b:Pages>272–278</b:Pages>
+    <b:DOI>10.1049/iet-net.2018.5028</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Kumar2020</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Kumar</b:Last><b:First>Neeraj</b:First></b:Person><b:Person><b:Last>Zeadally</b:Last><b:First>Sherali</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Smart health solutions for fog/edge-assisted Internet of Things for healthcare systems</b:Title>
+    <b:JournalName>IEEE Communications Magazine</b:JournalName>
+    <b:Year>2020</b:Year>
+    <b:Volume>58</b:Volume>
+    <b:Issue>4</b:Issue>
+    <b:Pages>56–61</b:Pages>
+    <b:DOI>10.1109/MCOM.001.1900523</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Tang2021</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Tang</b:Last><b:First>Shengkang</b:First></b:Person><b:Person><b:Last>Shelden</b:Last><b:First>Dana L.</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>AWS Serverless architecture for scalable web applications</b:Title>
+    <b:JournalName>IEEE Software</b:JournalName>
+    <b:Year>2021</b:Year>
+    <b:Volume>38</b:Volume>
+    <b:Issue>1</b:Issue>
+    <b:Pages>94–97</b:Pages>
+    <b:DOI>10.1109/MS.2020.3040659</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Laukyte2020</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Laukyte</b:Last><b:First>Migle</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>AI and legal subjectivity: Thoughts on the artificial legal person</b:Title>
+    <b:JournalName>Journal of Internet Law</b:JournalName>
+    <b:Year>2020</b:Year>
+    <b:Volume>24</b:Volume>
+    <b:Issue>2</b:Issue>
+    <b:Pages>1–9</b:Pages>
+    <b:DOI>10.2139/ssrn.3527564</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Alshammari2018</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Alshammari</b:Last><b:First>Bandr Mesleh</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Security and privacy issues with IoT in healthcare</b:Title>
+    <b:JournalName>Journal of Medical Engineering &amp; Technology</b:JournalName>
+    <b:Year>2018</b:Year>
+    <b:Volume>42</b:Volume>
+    <b:Issue>6</b:Issue>
+    <b:Pages>391–394</b:Pages>
+    <b:DOI>10.1080/03091902.2018.1520413</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Prince2016</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Prince</b:Last><b:First>Martin</b:First></b:Person><b:Person><b:Last>Comas-Herrera</b:Last><b:First>Adelina</b:First></b:Person><b:Person><b:Last>Knapp</b:Last><b:First>Martin</b:First></b:Person><b:Person><b:Last>Guerchet</b:Last><b:First>Maëlenn</b:First></b:Person><b:Person><b:Last>Karagiannidou</b:Last><b:First>Maria</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>World Alzheimer Report 2016: Improving healthcare for people living with dementia</b:Title>
+    <b:JournalName>Alzheimer's Disease International</b:JournalName>
+    <b:Year>2016</b:Year>
+    <b:Pages>1–140</b:Pages>
+    <b:DOI>10.17863/CAM.462</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Westin2003</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Westin</b:Last><b:First>Alan F.</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Social and political dimensions of privacy</b:Title>
+    <b:JournalName>Journal of Social Issues</b:JournalName>
+    <b:Year>2003</b:Year>
+    <b:Volume>59</b:Volume>
+    <b:Issue>2</b:Issue>
+    <b:Pages>431–453</b:Pages>
+    <b:DOI>10.1111/1540-4560.00072</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Wandering2021</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Yao</b:Last><b:First>Longpeng</b:First></b:Person><b:Person><b:Last>Chang</b:Last><b:First>Junlong</b:First></b:Person><b:Person><b:Last>Chen</b:Last><b:First>Long</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>A cloud-based tracking system for wandering Alzheimer patients using IoT and GPS</b:Title>
+    <b:JournalName>Sensors and Actuators A: Physical</b:JournalName>
+    <b:Year>2021</b:Year>
+    <b:Volume>321</b:Volume>
+    <b:Pages>112474</b:Pages>
+    <b:DOI>10.1016/j.sna.2021.112474</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Bianchi2019</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>Bianchi</b:Last><b:First>Lorenzo</b:First></b:Person><b:Person><b:Last>Magrini</b:Last><b:First>Andrea</b:First></b:Person><b:Person><b:Last>Norcia</b:Last><b:First>Giorgio</b:First></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Edge computing for Alzheimer patient management using cloud-connected wearable sensors</b:Title>
+    <b:JournalName>IEEE Transactions on Emerging Topics in Computing</b:JournalName>
+    <b:Year>2019</b:Year>
+    <b:Volume>9</b:Volume>
+    <b:Issue>1</b:Issue>
+    <b:Pages>166–178</b:Pages>
+    <b:DOI>10.1109/TETC.2019.2963342</b:DOI>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>WHO2021</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author><b:Author><b:NameList><b:Person><b:Last>World Health Organization</b:Last></b:Person></b:NameList></b:Author></b:Author>
+    <b:Title>Global status report on the public health response to dementia</b:Title>
+    <b:JournalName>WHO</b:JournalName>
+    <b:Year>2021</b:Year>
+    <b:Pages>1–88</b:Pages>
+    <b:DOI>10.46711/978924014580</b:DOI>
+  </b:Source>
+
+</b:Sources>
