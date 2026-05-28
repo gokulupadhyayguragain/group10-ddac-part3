@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#__next {
+  min-height: 100%;
+}
+
+body {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.leaflet-container {
+  font: inherit;
+}
+
+.trace-marker {
+  border-radius: 999px;
+  background: #0f766e;
+  border: 2px solid #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.22);
+}
+
+.trace-marker span {
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: 5px;
+  border-radius: 999px;
+  background: #ffffff;
+}

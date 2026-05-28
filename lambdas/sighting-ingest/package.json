@@ -1,0 +1,13 @@
+{
+  "name": "safetrace-sighting-ingest",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "index.mjs",
+  "scripts": {
+    "zip": "zip -r function.zip index.mjs package.json node_modules"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sqs": "^3.953.0"
+  }
+}

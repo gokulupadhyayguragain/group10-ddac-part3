@@ -1,0 +1,94 @@
+name: safetrace
+
+services:
+  db:
+    image: postgres:16-alpine
+    profiles:
+      - local-db
+      - test
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-safetrace}
+      POSTGRES_USER: ${POSTGRES_USER:-safetrace}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-safetrace}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U safetrace -d safetrace"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build: ./backend_ts
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://safetrace:safetrace@db:5432/safetrace}
+      JWT_SECRET: ${JWT_SECRET:-local-dev-only-change-before-cloud}
+      PORT: "5000"
+      NODE_ENV: ${NODE_ENV:-production}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      SAFETRACE_SECRET_ID: ${SAFETRACE_SECRET_ID:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-}
+      AUTH_VERIFICATION_TTL_MINUTES: ${AUTH_VERIFICATION_TTL_MINUTES:-10}
+      AUTH_DEV_EXPOSE_VERIFICATION_CODE: ${AUTH_DEV_EXPOSE_VERIFICATION_CODE:-}
+      TRUST_PROXY: ${TRUST_PROXY:-}
+      S3_BUCKET: ${S3_BUCKET:-}
+      S3_PUBLIC_BASE_URL: ${S3_PUBLIC_BASE_URL:-}
+      SQS_QUEUE_URL: ${SQS_QUEUE_URL:-}
+      SNS_TOPIC_ARN: ${SNS_TOPIC_ARN:-}
+      SIGHTING_EVENT_API_URL: ${SIGHTING_EVENT_API_URL:-}
+      SIGHTING_EVENT_API_KEY: ${SIGHTING_EVENT_API_KEY:-}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOOGLE_OAUTH_CALLBACK_URL: ${GOOGLE_OAUTH_CALLBACK_URL:-}
+      FRONTEND_PUBLIC_URL: ${FRONTEND_PUBLIC_URL:-http://localhost:3000}
+    depends_on:
+      db:
+        condition: service_healthy
+        required: false
+    ports:
+      - "${BACKEND_PORT:-5000}:5000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:5000/api/health | grep -q ok"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  frontend:
+    build: ./frontend_next
+    environment:
+      BACKEND_URL: ${BACKEND_URL:-http://backend:5000}
+      NEXT_TELEMETRY_DISABLED: "1"
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000 >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  e2e:
+    image: mcr.microsoft.com/playwright:v1.60.0-jammy
+    working_dir: /work
+    profiles:
+      - test
+    environment:
+      PLAYWRIGHT_BASE_URL: http://frontend:3000
+    volumes:
+      - ./frontend_next:/work
+      - e2e_node_modules:/work/node_modules
+      - e2e_test_results:/work/test-results
+      - e2e_playwright_report:/work/playwright-report
+    depends_on:
+      frontend:
+        condition: service_healthy
+    command: ["sh", "-lc", "if [ ! -d node_modules/@playwright/test ]; then npm ci --fetch-retries=5 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000 --fetch-timeout=120000; fi; npx playwright test"]
+
+volumes:
+  pgdata:
+  e2e_node_modules:
+  e2e_test_results:
+  e2e_playwright_report:
