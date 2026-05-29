@@ -1,7 +1,7 @@
 #!/bin/bash
 # ==============================================================================
 # SafeTrace EC2 User Data Provisioning Script
-# Targets: Amazon Linux 2 / Amazon Linux 2023
+# Targets: Ubuntu Server 22.04 / 24.04 LTS
 # Description: Automates the setup of Docker, Docker Compose, Git, clones
 #              the SafeTrace repository, configures the environment, and
 #              launches the full-stack containerised application.
@@ -13,7 +13,7 @@ set -euo pipefail
 # Redirect all stdout/stderr to a log file for CloudWatch/debugging
 exec > >(tee -a /var/log/user-data.log) 2>&1
 
-REPO_DIR="/home/ec2-user/safetrace"
+REPO_DIR="/home/ubuntu/safetrace"
 
 on_error() {
     echo "ERROR: SafeTrace provisioning failed at line ${1}."
@@ -31,7 +31,7 @@ echo "Starting SafeTrace Provisioning..."
 echo "=========================================="
 
 # Private app subnets must have NAT Gateway routing for this script. It reaches
-# yum repos, GitHub, Docker Hub, npm, Secrets Manager, and external APIs.
+# apt repos, GitHub, Docker Hub, npm, Secrets Manager, and external APIs.
 
 # Small lab instances can run out of memory while building Next.js. Add swap.
 if [ ! -f /swapfile ]; then
@@ -45,11 +45,12 @@ fi
 
 # 1. Update System Packages
 echo "Updating packages..."
-yum update -y
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -y
 
 # 2. Install Git and Docker
 echo "Installing Git and Docker..."
-yum install -y git docker curl
+apt-get install -y git docker.io curl ca-certificates
 
 # 3. Start and Enable Docker Service
 echo "Enabling and starting Docker..."
@@ -65,8 +66,8 @@ chmod +x "$DOCKER_CONFIG/docker-compose"
 ln -sf /usr/local/lib/docker/cli-plugins/docker-compose /usr/bin/docker-compose
 docker compose version
 
-# 5. Add default user (ec2-user) to docker group so sudo is not required
-usermod -aG docker ec2-user
+# 5. Add default Ubuntu user to docker group so sudo is not required
+usermod -aG docker ubuntu
 
 # 6. Clone SafeTrace Repository
 if [ -d "$REPO_DIR/.git" ]; then
@@ -79,7 +80,7 @@ else
     rm -rf "$REPO_DIR"
     git clone --depth 1 https://github.com/gokulupadhyayguragain/group10-ddac-part3.git "$REPO_DIR"
 fi
-chown -R ec2-user:ec2-user "$REPO_DIR"
+chown -R ubuntu:ubuntu "$REPO_DIR"
 
 # 7. Configure Environment Variables
 # The production .env contains only the non-secret bootstrap pointer. Store the
@@ -97,7 +98,7 @@ FRONTEND_PORT=80
 BACKEND_PORT=5000
 EOF
 
-chown ec2-user:ec2-user "$ENV_FILE"
+chown ubuntu:ubuntu "$ENV_FILE"
 chmod 600 "$ENV_FILE"
 
 # 8. Run App Containers

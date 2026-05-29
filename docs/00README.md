@@ -32,6 +32,7 @@ Registration now uses rate-limited email verification. In AWS, put `RESEND_API_K
 | `09FINAL_SUBMISSION_CHECKLIST.md` | Final assignment audit and evidence checklist |
 | `10SECRETS_MANAGER_VALUES.md` | Complete Secrets Manager JSON and value sources |
 | `AWS_ACADEMY_SHORT_BUILD_SHEET.md` | Short AWS Academy VPC/ALB/ASG/RDS build sheet |
+| `CLOUDSHELL_VERSION.md` | AWS CloudShell command version of the serverful build |
 | `GITHUB_AND_LAMBDA_DEPLOY.md` | GitHub push and Lambda zip upload guide |
 | `references_apa7.xml` | APA 7 references |
 | `WORKLOAD.docx` | Workload matrix |

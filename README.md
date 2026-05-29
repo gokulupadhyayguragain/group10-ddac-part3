@@ -81,9 +81,9 @@ Upload those zip files to AWS Lambda. Do not upload raw `index.mjs` files alone.
 ## Main Guides
 
 - `docs/AWS_ACADEMY_SHORT_BUILD_SHEET.md`
+- `docs/CLOUDSHELL_VERSION.md`
 - `docs/INFRA_MANUAL_AWS_CONSOLE.md`
 - `docs/04STEP4_AWS_DEPLOY.md`
 - `docs/05STEP5_SERVERLESS.md`
 - `docs/GITHUB_AND_LAMBDA_DEPLOY.md`
 - `docs/09FINAL_SUBMISSION_CHECKLIST.md`
-

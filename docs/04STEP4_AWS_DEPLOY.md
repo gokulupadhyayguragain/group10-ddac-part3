@@ -3,7 +3,7 @@
 This guide provides instructions for deploying the SafeTrace **Task 1 server-based system** onto AWS. Task 1 is the complete web application running on EC2 with RDS PostgreSQL. Do not mix this with the Task 2 serverless extension while explaining Task 1.
 
 ## Compute and Database Target
-- **Compute Layer**: AWS EC2 (t2.micro / t3.micro running Amazon Linux 2023) or AWS Elastic Beanstalk.
+- **Compute Layer**: AWS EC2 (t2.micro / t3.micro running Ubuntu Server 22.04/24.04 LTS) or AWS Elastic Beanstalk.
 - **Database Layer**: AWS RDS PostgreSQL 15/16 (db.t3.micro, multi-AZ disabled for coursework).
 - **Photo handling for Task 1**: photos may remain as database-backed data URLs for the server demo. S3 is introduced separately in Task 2.
 
@@ -58,18 +58,18 @@ When launching a new EC2 instance, paste the contents of `aws-user-data.sh` into
 3. Launch the containerised frontend and backend against RDS, then seed demo data.
 
 ### Option B: Manual Setup
-1. Launch an EC2 instance running **Amazon Linux 2023** (t2.micro / t3.micro).
+1. Launch an EC2 instance running **Ubuntu Server 22.04/24.04 LTS** (t2.micro / t3.micro).
 2. If using an ALB, attach an app security group that allows **HTTP 80 only from `alb-sg`**. Do not open port `3000` or `5000` to the public Internet.
 3. Log in to the instance via SSH:
    ```bash
-   ssh -i your-key.pem ec2-user@your-ec2-ip
+   ssh -i your-key.pem ubuntu@your-ec2-ip
    ```
 4. Install system packages and Docker:
    ```bash
-   sudo yum update -y
-   sudo yum install -y git docker
+   sudo apt-get update -y
+   sudo apt-get install -y git docker.io curl ca-certificates
    sudo systemctl enable --now docker
-   sudo usermod -aG docker ec2-user
+   sudo usermod -aG docker ubuntu
    ```
 5. Install Docker Compose v2:
    ```bash

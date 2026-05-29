@@ -210,9 +210,9 @@ aws ec2 run-instances \
 
 ```bash
 #!/bin/bash
-yum update -y
-yum install -y git
-cd /home/ec2-user
+apt-get update -y
+apt-get install -y git
+cd /home/ubuntu
 git clone https://github.com/example/sample-frontend.git frontend
 git clone https://github.com/example/sample-backend.git backend
 # bootstrap backend (example)

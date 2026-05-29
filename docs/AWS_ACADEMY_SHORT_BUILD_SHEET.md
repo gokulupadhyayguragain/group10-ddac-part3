@@ -73,7 +73,7 @@ no internet route
 associate privatedb-a, privatedb-b
 ```
 
-NAT is required if EC2 runs in private app subnets and user-data installs/builds the app. The instance must reach yum repositories, GitHub, Docker Hub, npm, AWS Secrets Manager, and external email/OAuth APIs.
+NAT is required if EC2 runs in private app subnets and user-data installs/builds the app. The instance must reach apt repositories, GitHub, Docker Hub, npm, AWS Secrets Manager, and external email/OAuth APIs.
 
 If AWS Academy budget is tight, use one NAT Gateway in `public-a` and point both `privateapp` route tables to it. For HA, use `nat-a` and `nat-b`.
 
@@ -246,7 +246,7 @@ listener HTTPS 443 -> optional ACM certificate -> forward to my-app-tg
 
 ```text
 my-app-lt
-AMI: Amazon Linux 2023
+AMI: Ubuntu Server 22.04 or 24.04 LTS
 instance type: t3.micro
 network: do not auto-assign public IP
 security group: app-sg
@@ -256,7 +256,16 @@ user data: below
 
 User data runs only on first boot. If you edit the launch template user data later, start an ASG instance refresh or terminate the old instances so new ones launch with the new script.
 
-User data:
+Minimal user data, recommended:
+
+```bash
+#!/bin/bash
+curl -fsSL https://raw.githubusercontent.com/gokulupadhyayguragain/group10-ddac-part3/main/aws-user-data.sh | bash
+```
+
+This works only if the GitHub repository is public and the private app subnet has NAT access to GitHub. The full script that runs is `aws-user-data.sh` in the repo.
+
+Full user data, same content as `aws-user-data.sh`:
 
 ```bash
 #!/bin/bash
@@ -264,7 +273,7 @@ set -euo pipefail
 
 exec > >(tee -a /var/log/user-data.log) 2>&1
 
-REPO_DIR="/home/ec2-user/safetrace"
+REPO_DIR="/home/ubuntu/safetrace"
 
 on_error() {
     echo "ERROR: SafeTrace provisioning failed at line ${1}."
@@ -290,8 +299,9 @@ if [ ! -f /swapfile ]; then
     echo '/swapfile swap swap defaults 0 0' >> /etc/fstab
 fi
 
-yum update -y
-yum install -y git docker curl
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -y
+apt-get install -y git docker.io curl ca-certificates
 systemctl enable --now docker
 docker --version
 
@@ -302,7 +312,7 @@ chmod +x "$DOCKER_CONFIG/docker-compose"
 ln -sf "$DOCKER_CONFIG/docker-compose" /usr/bin/docker-compose
 docker compose version
 
-usermod -aG docker ec2-user
+usermod -aG docker ubuntu
 
 if [ -d "$REPO_DIR/.git" ]; then
     cd "$REPO_DIR"
@@ -312,7 +322,7 @@ else
     rm -rf "$REPO_DIR"
     git clone --depth 1 https://github.com/gokulupadhyayguragain/group10-ddac-part3.git "$REPO_DIR"
 fi
-chown -R ec2-user:ec2-user "$REPO_DIR"
+chown -R ubuntu:ubuntu "$REPO_DIR"
 
 cat > "$REPO_DIR/.env" <<'EOF'
 AWS_REGION=us-east-1
@@ -320,7 +330,7 @@ SAFETRACE_SECRET_ID=safetrace/prod/app
 FRONTEND_PORT=80
 BACKEND_PORT=5000
 EOF
-chown ec2-user:ec2-user "$REPO_DIR/.env"
+chown ubuntu:ubuntu "$REPO_DIR/.env"
 chmod 600 "$REPO_DIR/.env"
 
 cd "$REPO_DIR"
@@ -382,7 +392,7 @@ Run these on the EC2 instance through SSM or SSH:
 ```bash
 sudo tail -n 200 /var/log/cloud-init-output.log
 sudo tail -n 200 /var/log/user-data.log
-cd /home/ec2-user/safetrace
+cd /home/ubuntu/safetrace
 sudo docker compose ps
 sudo docker compose logs --tail=100 backend
 sudo docker compose logs --tail=100 frontend
@@ -416,7 +426,7 @@ Secrets Manager:
   DATABASE_URL must use the real RDS endpoint and ?sslmode=require
 ```
 
-If the EC2 instance has no `/home/ec2-user/safetrace` folder, user data failed before Git clone. Check NAT route, outbound HTTPS, and `/var/log/cloud-init-output.log`.
+If the EC2 instance has no `/home/ubuntu/safetrace` folder, user data failed before Git clone. Check NAT route, outbound HTTPS, and `/var/log/cloud-init-output.log`.
 
 Most common failures:
 
@@ -425,7 +435,7 @@ ALB target unhealthy:
   target group port/path is wrong, or Docker did not publish host port 80
 
 user-data stops before Docker:
-  NAT route is missing or yum/GitHub/Docker Hub/npm cannot be reached
+  NAT route is missing or apt/GitHub/Docker Hub/npm cannot be reached
 
 backend container restarts:
   DATABASE_URL, Secrets Manager IAM, or RDS security group is wrong

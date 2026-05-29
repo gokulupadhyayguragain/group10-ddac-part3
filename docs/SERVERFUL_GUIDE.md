@@ -427,7 +427,7 @@ Part 15 — Create the launch template
 
 2) Choose the core settings
 - Template name: `my-app-lt`
-- AMI: Amazon Linux 2 or another Amazon-owned AMI approved in the lab
+- AMI: Ubuntu Server 22.04/24.04 LTS or another AMI approved in the lab
 - Instance type: `t3.micro`
 - Key pair: optional (you can use Session Manager instead of SSH)
 - Network settings: no public IP
@@ -439,9 +439,9 @@ Part 15 — Create the launch template
 Example user data:
 ```bash
 #!/bin/bash
-yum update -y
-yum install -y git
-cd /home/ec2-user
+apt-get update -y
+apt-get install -y git
+cd /home/ubuntu
 git clone https://github.com/example/sample-app.git
 cd sample-app
 chmod +x start.sh
@@ -493,9 +493,10 @@ Part 17 — Verify the deployment
 - EC2 → Instances → Select an instance → Connect → Session Manager
 - Install a client if needed and connect to the database endpoint
 
-Example command (Amazon Linux)
+Example command (Ubuntu)
 ```bash
-sudo yum install -y postgresql
+sudo apt-get update -y
+sudo apt-get install -y postgresql-client
 psql --host=<your-rds-endpoint> --port=5432 --username=postgres --dbname=postgres
 ```
 
