@@ -418,6 +418,9 @@ chown ubuntu:ubuntu "$REPO_DIR/.env"
 chmod 600 "$REPO_DIR/.env"
 
 cd "$REPO_DIR"
+docker compose down --remove-orphans || true
+docker builder prune -af || true
+docker system prune -af || true
 docker compose config
 docker compose up --build -d
 docker compose ps
@@ -526,6 +529,7 @@ aws ssm start-session --target <instance-id>
 Then run on the instance:
 
 ```bash
+df -h
 sudo tail -n 200 /var/log/cloud-init-output.log
 sudo tail -n 200 /var/log/user-data.log
 cd /home/ubuntu/safetrace
@@ -551,6 +555,9 @@ Backend restarts:
 
 Target group still shows HTTP:3000:
   create/attach the port 80 target group; do not use 3000 with this deployment
+
+Docker build says no space left on device:
+  run docker cleanup, pull the optimized Dockerfiles, or increase the EC2 root EBS volume to 16GB
 ```
 
 ## 11. Task 2 Serverless Values

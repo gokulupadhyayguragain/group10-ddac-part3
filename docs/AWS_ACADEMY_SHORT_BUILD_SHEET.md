@@ -334,6 +334,9 @@ chown ubuntu:ubuntu "$REPO_DIR/.env"
 chmod 600 "$REPO_DIR/.env"
 
 cd "$REPO_DIR"
+docker compose down --remove-orphans || true
+docker builder prune -af || true
+docker system prune -af || true
 docker compose config
 docker compose up --build -d
 docker compose ps
@@ -390,6 +393,7 @@ Verify:
 Run these on the EC2 instance through SSM or SSH:
 
 ```bash
+df -h
 sudo tail -n 200 /var/log/cloud-init-output.log
 sudo tail -n 200 /var/log/user-data.log
 cd /home/ubuntu/safetrace
@@ -436,6 +440,9 @@ ALB target unhealthy:
 
 user-data stops before Docker:
   NAT route is missing or apt/GitHub/Docker Hub/npm cannot be reached
+
+Docker build fails with no space left:
+  run docker cleanup, use the optimized multi-stage Dockerfiles, or increase root EBS to 16GB
 
 backend container restarts:
   DATABASE_URL, Secrets Manager IAM, or RDS security group is wrong

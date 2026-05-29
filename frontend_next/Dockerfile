@@ -1,14 +1,24 @@
-FROM node:20-alpine AS builder
+FROM node:20-alpine AS deps
 ENV NEXT_TELEMETRY_DISABLED=1
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
-COPY . .
-RUN npm run build
 
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 ENV NEXT_TELEMETRY_DISABLED=1
 WORKDIR /app
-COPY --from=builder /app .
+COPY --from=deps /app/node_modules ./node_modules
+COPY package*.json ./
+COPY . .
+RUN npm run build && rm -rf .next/cache
+
+FROM node:20-alpine AS runner
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+WORKDIR /app
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 EXPOSE 3000
-CMD ["npm","start"]
+CMD ["node","server.js"]

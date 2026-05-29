@@ -104,6 +104,9 @@ chmod 600 "$ENV_FILE"
 # 8. Run App Containers
 echo "Launching SafeTrace Docker Compose containers..."
 cd "$REPO_DIR"
+docker compose down --remove-orphans || true
+docker builder prune -af || true
+docker system prune -af || true
 docker compose config
 docker compose up --build -d
 docker compose ps
