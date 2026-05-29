@@ -4,6 +4,28 @@ Use `us-east-1`.
 
 ## Phase A: Task 1 Server App
 
+Final serverful path:
+
+```text
+Internet
+-> ALB listener 80/443
+-> Target group HTTP port 80
+-> EC2 Docker host port 80
+-> frontend container port 3000
+-> backend container port 5000
+-> RDS PostgreSQL port 5432
+```
+
+No Nginx is required for this path. The Next.js container serves the website and proxies `/api/*` to the backend container. The ALB talks to the EC2 instance on port `80`; Docker publishes that host port to the frontend container.
+
+Before the ALB can work, the EC2 instance itself must pass:
+
+```bash
+curl -i http://localhost
+curl -i http://localhost/api/health
+curl -i http://localhost:5000/api/health
+```
+
 ### 1. VPC
 
 ```text
@@ -51,7 +73,9 @@ no internet route
 associate privatedb-a, privatedb-b
 ```
 
-If AWS Academy budget is tight, use one NAT only. For HA, use `nat-a` and `nat-b`.
+NAT is required if EC2 runs in private app subnets and user-data installs/builds the app. The instance must reach yum repositories, GitHub, Docker Hub, npm, AWS Secrets Manager, and external email/OAuth APIs.
+
+If AWS Academy budget is tight, use one NAT Gateway in `public-a` and point both `privateapp` route tables to it. For HA, use `nat-a` and `nat-b`.
 
 ### 3. Security Groups
 
@@ -90,7 +114,7 @@ Task 1 JSON:
 
 ```json
 {
-  "DATABASE_URL": "postgresql://postgres:<rds-password>@<rds-endpoint>:5432/safetrace",
+  "DATABASE_URL": "postgresql://postgres:<url-encoded-rds-password>@mydb.cmzbysmie18b.us-east-1.rds.amazonaws.com:5432/safetrace?sslmode=require",
   "JWT_SECRET": "<openssl rand -base64 48>",
   "AWS_REGION": "us-east-1",
   "FRONTEND_PUBLIC_URL": "http://<alb-dns-name>",
@@ -104,7 +128,7 @@ Task 1 JSON:
 Where values come from:
 
 ```text
-DATABASE_URL            RDS endpoint + DB username/password
+DATABASE_URL            RDS endpoint + DB username/password; URL-encode password symbols
 JWT_SECRET              openssl rand -base64 48
 FRONTEND_PUBLIC_URL     ALB DNS name, later HTTPS domain
 RESEND_API_KEY          Resend dashboard -> API Keys
@@ -117,7 +141,11 @@ EC2 `.env` only:
 ```env
 AWS_REGION=us-east-1
 SAFETRACE_SECRET_ID=safetrace/prod/app
+FRONTEND_PORT=80
+BACKEND_PORT=5000
 ```
+
+Do not store real `DATABASE_URL`, `JWT_SECRET`, Google keys, or Resend keys in `.env`; those stay in Secrets Manager.
 
 ### 5. RDS PostgreSQL
 
@@ -201,6 +229,8 @@ health check path: /api/health
 matcher: 200
 ```
 
+If your existing target group shows `HTTP:3000`, create a new target group on port `80` and attach it to the ALB listener and ASG. Do not mix the old `3000` target group with this `FRONTEND_PORT=80` deployment.
+
 ### 8. ALB
 
 ```text
@@ -224,44 +254,96 @@ IAM instance profile: LabInstanceProfile or my-app-ec2-role
 user data: below
 ```
 
+User data runs only on first boot. If you edit the launch template user data later, start an ASG instance refresh or terminate the old instances so new ones launch with the new script.
+
 User data:
 
 ```bash
 #!/bin/bash
-set -e
+set -euo pipefail
+
+exec > >(tee -a /var/log/user-data.log) 2>&1
+
+REPO_DIR="/home/ec2-user/safetrace"
+
+on_error() {
+    echo "ERROR: SafeTrace provisioning failed at line ${1}."
+    if [ -d "$REPO_DIR" ]; then
+        cd "$REPO_DIR" || true
+        docker compose ps || true
+        docker compose logs --tail=120 || true
+    fi
+}
+
+trap 'on_error $LINENO' ERR
+
+echo "=========================================="
+echo "Starting SafeTrace Provisioning..."
+echo "=========================================="
+
+if [ ! -f /swapfile ]; then
+    echo "Creating 2GB swapfile..."
+    fallocate -l 2G /swapfile || dd if=/dev/zero of=/swapfile bs=128M count=16
+    chmod 600 /swapfile
+    mkswap /swapfile
+    swapon /swapfile
+    echo '/swapfile swap swap defaults 0 0' >> /etc/fstab
+fi
+
 yum update -y
-yum install -y git docker
+yum install -y git docker curl
 systemctl enable --now docker
+docker --version
 
 DOCKER_CONFIG=/usr/local/lib/docker/cli-plugins
 mkdir -p "$DOCKER_CONFIG"
-curl -SL "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o "$DOCKER_CONFIG/docker-compose"
+curl -fSL "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o "$DOCKER_CONFIG/docker-compose"
 chmod +x "$DOCKER_CONFIG/docker-compose"
 ln -sf "$DOCKER_CONFIG/docker-compose" /usr/bin/docker-compose
+docker compose version
 
 usermod -aG docker ec2-user
 
-cd /home/ec2-user
-git clone https://github.com/gokulupadhyayguragain/group10-ddac-part3.git safetrace || true
-cd safetrace
-git pull || true
+if [ -d "$REPO_DIR/.git" ]; then
+    cd "$REPO_DIR"
+    git fetch origin main
+    git reset --hard origin/main
+else
+    rm -rf "$REPO_DIR"
+    git clone --depth 1 https://github.com/gokulupadhyayguragain/group10-ddac-part3.git "$REPO_DIR"
+fi
+chown -R ec2-user:ec2-user "$REPO_DIR"
 
-cat > .env <<'EOF'
+cat > "$REPO_DIR/.env" <<'EOF'
 AWS_REGION=us-east-1
 SAFETRACE_SECRET_ID=safetrace/prod/app
 FRONTEND_PORT=80
 BACKEND_PORT=5000
 EOF
+chown ec2-user:ec2-user "$REPO_DIR/.env"
+chmod 600 "$REPO_DIR/.env"
 
+cd "$REPO_DIR"
+docker compose config
 docker compose up --build -d
+docker compose ps
 
-for i in {1..30}; do
-  if curl -fsS http://localhost:5000/api/health >/dev/null; then
+ready=0
+for i in {1..60}; do
+  if curl -fsS http://localhost:5000/api/health >/dev/null && curl -fsS http://localhost/api/health >/dev/null; then
     curl -fsS -X POST http://localhost:5000/api/admin/seed || true
-    exit 0
+    ready=1
+    break
   fi
   sleep 5
 done
+
+if [ "$ready" -ne 1 ]; then
+  docker compose ps || true
+  docker compose logs --tail=200 backend || true
+  docker compose logs --tail=200 frontend || true
+  exit 1
+fi
 ```
 
 ### 10. Auto Scaling Group
@@ -291,6 +373,65 @@ Verify:
 /login
 /register
 /admin
+```
+
+### 11. If It Does Not Open
+
+Run these on the EC2 instance through SSM or SSH:
+
+```bash
+sudo tail -n 200 /var/log/cloud-init-output.log
+sudo tail -n 200 /var/log/user-data.log
+cd /home/ec2-user/safetrace
+sudo docker compose ps
+sudo docker compose logs --tail=100 backend
+sudo docker compose logs --tail=100 frontend
+curl -i http://localhost
+curl -i http://localhost/api/health
+curl -i http://localhost:5000/api/health
+```
+
+Check these AWS settings:
+
+```text
+Target group:
+  targets must be healthy
+  port must be 80
+  health path must be /api/health
+  success matcher must be 200
+
+app-sg:
+  inbound TCP 80 only from alb-sg
+
+rds-sg:
+  inbound TCP 5432 only from app-sg
+
+privateapp route tables:
+  0.0.0.0/0 must route to NAT Gateway
+
+EC2 IAM instance profile:
+  must allow secretsmanager:GetSecretValue for safetrace/prod/app
+
+Secrets Manager:
+  DATABASE_URL must use the real RDS endpoint and ?sslmode=require
+```
+
+If the EC2 instance has no `/home/ec2-user/safetrace` folder, user data failed before Git clone. Check NAT route, outbound HTTPS, and `/var/log/cloud-init-output.log`.
+
+Most common failures:
+
+```text
+ALB target unhealthy:
+  target group port/path is wrong, or Docker did not publish host port 80
+
+user-data stops before Docker:
+  NAT route is missing or yum/GitHub/Docker Hub/npm cannot be reached
+
+backend container restarts:
+  DATABASE_URL, Secrets Manager IAM, or RDS security group is wrong
+
+frontend opens but login/register fails:
+  backend container is unhealthy or BACKEND_URL cannot reach http://backend:5000
 ```
 
 ## Phase B: Task 2 Serverless Extension
