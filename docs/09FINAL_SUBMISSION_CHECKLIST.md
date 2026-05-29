@@ -79,9 +79,9 @@ Deploy in two separate phases. Do not present Task 1 as serverless.
    - Build `frontend_next` with `NEXT_PUBLIC_API_BASE_URL=<api-gateway-url>`.
    - Upload the exported `out/` folder contents to the S3 frontend bucket.
 
-3. Seed or migrate data.
+3. Seed data and describe migration strategy.
    - Seed demo data with `POST /api/admin/seed`.
-   - Optional real migration: `tools/postgres-to-dynamodb` copies RDS PostgreSQL records into DynamoDB and moves data-URI photos into S3.
+   - For the report, explain that real RDS PostgreSQL migration would use AWS DMS plus AWS Schema Conversion Tool / DMS Schema Conversion for assessment and planning.
 
 4. Verify the full serverless path.
    - Open the S3 website URL.

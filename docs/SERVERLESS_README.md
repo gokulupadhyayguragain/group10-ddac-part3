@@ -67,8 +67,6 @@ lambdas/serverless-api/
 lambdas/alert-dispatcher/
   SQS worker -> SNS notification dispatcher.
 
-tools/postgres-to-dynamodb/
-  Migrates Phase A PostgreSQL/RDS data into DynamoDB and moves data-URI images into S3.
 ```
 
 ## Deploy
@@ -105,20 +103,6 @@ Build the frontend with that API URL and upload `frontend_next/out` contents to 
 
 ## DynamoDB Conversion
 
-Run the migration tool only if you want to move real Phase A data:
-
-```bash
-cd code/tools/postgres-to-dynamodb
-npm install
-
-export AWS_REGION=us-east-1
-export DATABASE_URL="postgresql://postgres:<password>@<rds-endpoint>:5432/safetrace?sslmode=require"
-export TABLE_NAME="my-app-table"
-export PHOTO_BUCKET="group10-alzheimer-photos-<account-id>"
-
-npm run migrate
-```
-
 The converted DynamoDB model:
 
 ```text
@@ -129,6 +113,8 @@ ALERT#<id>     META
 ```
 
 `GSI1PK` stores the entity type and `GSI1SK` stores `created_at#id` for listing.
+
+No custom migration script is needed for the demo. In the report, describe AWS DMS for data movement and AWS Schema Conversion Tool / DMS Schema Conversion for assessment and conversion planning. DynamoDB remains access-pattern based, so it is not a direct relational table copy.
 
 ## Report Evidence
 

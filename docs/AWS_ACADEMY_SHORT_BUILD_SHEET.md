@@ -513,7 +513,6 @@ Required repo files:
 frontend_next/                         static frontend export
 lambdas/serverless-api/                Lambda API backend
 lambdas/alert-dispatcher/              SQS worker to SNS
-tools/postgres-to-dynamodb/            RDS -> DynamoDB/S3 migration
 docs/AWS_ACADEMY_SERVERLESS_GUI_CONSOLE.md  full GUI console runbook
 ```
 
@@ -789,15 +788,14 @@ do not upload the out folder itself
 
 Open the S3 static website endpoint.
 
-### B11. Migration From Phase A RDS
+### B11. Migration Statement
 
-```bash
-cd code/tools/postgres-to-dynamodb
-npm install
-export DATABASE_URL="postgresql://postgres:<password>@<rds-endpoint>:5432/safetrace?sslmode=require"
-export TABLE_NAME="my-app-table"
-export PHOTO_BUCKET="group10-alzheimer-photos-<account-id>"
-npm run migrate
+No custom migration script is needed for the demo.
+
+For the report:
+
+```text
+If Phase A RDS PostgreSQL data must be moved into Phase B DynamoDB, use AWS Database Migration Service (AWS DMS) for data movement and AWS Schema Conversion Tool / DMS Schema Conversion for assessment and conversion planning. DynamoDB is designed by access pattern, so the final single-table design is not a direct table-for-table relational copy.
 ```
 
 ### B12. Queue Demonstration

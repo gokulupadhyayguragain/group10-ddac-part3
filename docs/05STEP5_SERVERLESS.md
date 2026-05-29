@@ -44,7 +44,6 @@ lambdas/alert-dispatcher/              SQS worker that publishes SNS and updates
 docs/AWS_ACADEMY_SERVERLESS_GUI_CONSOLE.md  AWS Console click-by-click build sheet
 scripts/package_lambdas.sh             Builds Lambda zip files for console upload
 scripts/build_serverless_frontend.sh   Builds S3 static frontend output
-tools/postgres-to-dynamodb/            RDS PostgreSQL -> DynamoDB/S3 migration tool
 ```
 
 ## DynamoDB Schema Conversion
@@ -106,23 +105,17 @@ admin@example.com
 password
 ```
 
-## Migrate Phase A RDS Data
+## Migration Approach
 
-Run this only when you want to copy Phase A data into Phase B:
+No custom migration script is required for this coursework demo.
+
+If Phase A RDS PostgreSQL data must be moved into Phase B DynamoDB, use AWS Database Migration Service (AWS DMS) for data movement and AWS Schema Conversion Tool / DMS Schema Conversion for assessment and conversion planning. DynamoDB is NoSQL, so the final table is designed from application access patterns instead of copied as a one-to-one relational schema.
+
+For the demo, seed DynamoDB with:
 
 ```bash
-cd code/tools/postgres-to-dynamodb
-npm install
-
-export AWS_REGION=us-east-1
-export DATABASE_URL="postgresql://postgres:<password>@<rds-endpoint>:5432/safetrace?sslmode=require"
-export TABLE_NAME="my-app-table"
-export PHOTO_BUCKET="group10-alzheimer-photos-<account-id>"
-
-npm run migrate
+curl -i -X POST "$API_BASE_URL/api/admin/seed"
 ```
-
-The tool copies users, missing persons, sightings, and alerts to DynamoDB. If `photo_url` contains a data URI, it uploads the image to the photo S3 bucket and stores the S3 URL in DynamoDB.
 
 ## Queue Demonstration
 
