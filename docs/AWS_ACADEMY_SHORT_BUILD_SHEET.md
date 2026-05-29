@@ -475,138 +475,369 @@ frontend opens but login/register fails:
   backend container is unhealthy or BACKEND_URL cannot reach http://backend:5000
 ```
 
-## Phase B: Task 2 Serverless Extension
+## Phase B: Task 2 Full Serverless
 
-Add these only after Phase A works.
-
-### 1. S3 Photo Bucket
+Add this only after Phase A works. This is a separate deployment path and uses all required services. Use the **AWS Management Console GUI** for the Academy build. Do not use CloudFormation for the screenshots/runbook version.
 
 ```text
-bucket:
-group10-alzheimer-photos-<account-id>
-
-public access:
-Block all public access ON
-
-purpose:
-patient and sighting images
+S3 frontend bucket
+S3 photo bucket
+API Gateway
+Lambda API backend
+DynamoDB
+Secrets Manager
+SQS
+Lambda worker
+SNS
+CloudWatch
+X-Ray
 ```
 
-Do not use public-read bucket policy for patient/sighting photos.
-
-### 2. SQS
+Architecture:
 
 ```text
-queue:
-my-app-queue
-
-type:
-Standard
-
-visibility timeout:
-30 seconds
+Browser
+-> S3 frontend bucket
+-> API Gateway HTTP API
+-> serverless-api Lambda
+-> DynamoDB
+-> S3 photo bucket
+-> SQS queue
+-> alert-dispatcher Lambda worker
+-> SNS topic
 ```
 
-### 3. SNS
+Required repo files:
 
 ```text
-topic:
-my-app-topic
-
-subscriptions:
-email or SMS
+frontend_next/                         static frontend export
+lambdas/serverless-api/                Lambda API backend
+lambdas/alert-dispatcher/              SQS worker to SNS
+tools/postgres-to-dynamodb/            RDS -> DynamoDB/S3 migration
+docs/AWS_ACADEMY_SERVERLESS_GUI_CONSOLE.md  full GUI console runbook
 ```
 
-Confirm email subscriptions before the demo.
+### B0. Build Local Upload Files
 
-### 4. Lambda: API Ingest
+Run locally from the repo:
+
+```bash
+cd code
+bash scripts/package_lambdas.sh
+```
+
+Upload these zip files in the Lambda console:
 
 ```text
-function:
-my-api-function
-
-real code folder:
-lambdas/sighting-ingest
-
-runtime:
-Node.js 20.x
-
-environment:
-AWS_REGION=us-east-1
-SQS_QUEUE_URL=<my-app-queue-url>
-SIGHTING_EVENT_API_KEY=<optional-shared-key>
-
-IAM:
-sqs:SendMessage to my-app-queue
-CloudWatch Logs
+build/lambdas/serverless-api.zip
+build/lambdas/alert-dispatcher.zip
 ```
 
-API Gateway:
+### B1. S3 Frontend Bucket
 
 ```text
-HTTP API
-route: POST /sighting-events
-integration: my-api-function
-CORS: allow ALB/domain origin
+S3 -> Create bucket
+name: group10-alzheimer-frontend-<account-id>
+region: us-east-1
+block public access: OFF
+static website hosting: ON
+index document: index.html
+error document: 404.html
 ```
 
-### 5. Lambda: Worker
-
-```text
-function:
-my-worker-function
-
-real code folder:
-lambdas/alert-dispatcher
-
-runtime:
-Node.js 20.x
-
-trigger:
-my-app-queue
-
-environment:
-AWS_REGION=us-east-1
-SNS_TOPIC_ARN=<my-app-topic-arn>
-
-IAM:
-sqs:ReceiveMessage
-sqs:DeleteMessage
-sqs:GetQueueAttributes
-sns:Publish to my-app-topic
-CloudWatch Logs
-```
-
-### 6. Add Task 2 Values To Same Secret
-
-Update `safetrace/prod/app`:
+Bucket policy:
 
 ```json
 {
-  "S3_BUCKET": "group10-alzheimer-photos-<account-id>",
-  "S3_PUBLIC_BASE_URL": "",
-  "SIGHTING_EVENT_API_URL": "https://<api-id>.execute-api.us-east-1.amazonaws.com/sighting-events",
-  "SIGHTING_EVENT_API_KEY": "<openssl rand -hex 24>",
-  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/<account-id>/my-app-queue",
-  "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:<account-id>:my-app-topic"
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadStaticFrontend",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::group10-alzheimer-frontend-<account-id>/*"
+    }
+  ]
 }
 ```
 
-Restart backend containers after updating the secret:
-
-```bash
-docker compose restart backend
-```
-
-## Do Not Create For This Project
+### B2. S3 Photo Bucket
 
 ```text
-DynamoDB table:
-not needed
+S3 -> Create bucket
+name: group10-alzheimer-photos-<account-id>
+region: us-east-1
+block public access: ON
+default encryption: SSE-S3
+no public policy
+```
 
-public S3 frontend bucket:
-not needed for current Next.js EC2/ALB architecture
+### B3. DynamoDB
 
-public-read photo bucket:
-do not use
+```text
+DynamoDB -> Create table
+table name: my-app-table
+partition key: PK String
+sort key: SK String
+capacity: on-demand
+GSI:
+  name: GSI1
+  partition key: GSI1PK String
+  sort key: GSI1SK String
+  projection: all
+TTL:
+  attribute: expires_at_epoch
+```
+
+Items store:
+
+```text
+USER#<id>      META
+PERSON#<id>    META
+SIGHTING#<id>  META
+ALERT#<id>     META
+```
+
+### B4. SQS And SNS
+
+```text
+SQS DLQ:
+  name: my-app-dlq
+  type: Standard
+  retention: 14 days
+
+SQS queue:
+  name: my-app-queue
+  type: Standard
+  visibility timeout: 30 seconds
+  receive wait time: 5 seconds
+  dead-letter queue: my-app-dlq
+  maximum receives: 5
+
+SNS topic:
+  name: my-app-topic
+  type: Standard
+  subscription: Email
+  confirm the email before demo
+```
+
+### B5. Secrets Manager
+
+```text
+Secrets Manager -> Store new secret
+type: Other type of secret
+name: safetrace/serverless/app
+```
+
+Secret JSON:
+
+```json
+{
+  "TABLE_NAME": "my-app-table",
+  "PHOTO_BUCKET": "group10-alzheimer-photos-<account-id>",
+  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/<account-id>/my-app-queue",
+  "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:<account-id>:my-app-topic",
+  "AWS_REGION": "us-east-1",
+  "CORS_ORIGIN": "*",
+  "AUTH_DEV_EXPOSE_VERIFICATION_CODE": "true",
+  "RESEND_API_KEY": "",
+  "RESEND_FROM_EMAIL": "",
+  "JWT_SECRET": "<openssl rand -base64 48>"
+}
+```
+
+For real email verification, fill `RESEND_API_KEY`, fill `RESEND_FROM_EMAIL`, and set `AUTH_DEV_EXPOSE_VERIFICATION_CODE=false`.
+
+### B6. IAM Roles
+
+Use `LabRole` if custom IAM is blocked. If custom IAM is allowed:
+
+```text
+my-api-function-role:
+  trusted service: Lambda
+  managed policies:
+    AWSLambdaBasicExecutionRole
+    AWSXRayDaemonWriteAccess
+  inline permissions:
+    secretsmanager:GetSecretValue on safetrace/serverless/app
+    dynamodb:GetItem/PutItem/Scan/Query/UpdateItem/DeleteItem on my-app-table and GSI
+    s3:PutObject/GetObject on group10-alzheimer-photos-<account-id>/*
+    sqs:SendMessage/GetQueueAttributes on my-app-queue
+    cloudwatch:GetMetricStatistics on *
+
+my-worker-function-role:
+  trusted service: Lambda
+  managed policies:
+    AWSLambdaBasicExecutionRole
+    AWSXRayDaemonWriteAccess
+  inline permissions:
+    sqs:ReceiveMessage/DeleteMessage/GetQueueAttributes/ChangeMessageVisibility on my-app-queue
+    sns:Publish on my-app-topic
+    dynamodb:UpdateItem on my-app-table
+```
+
+### B7. Lambda API Backend
+
+```text
+Lambda -> Create function
+name: my-api-function
+runtime: Node.js 20.x
+architecture: x86_64
+role: my-api-function-role or LabRole
+upload zip: build/lambdas/serverless-api.zip
+handler: index.handler
+memory: 512 MB
+timeout: 30 seconds
+X-Ray active tracing: ON
+```
+
+Environment variables:
+
+```text
+AWS_REGION=us-east-1
+SAFETRACE_SECRET_ID=safetrace/serverless/app
+TABLE_NAME=my-app-table
+PHOTO_BUCKET=group10-alzheimer-photos-<account-id>
+SQS_QUEUE_URL=https://sqs.us-east-1.amazonaws.com/<account-id>/my-app-queue
+CORS_ORIGIN=*
+```
+
+Do not put this Lambda in a VPC for Phase B. It uses AWS service endpoints directly and avoids NAT issues.
+
+### B8. Lambda Worker
+
+```text
+Lambda -> Create function
+name: my-worker-function
+runtime: Node.js 20.x
+architecture: x86_64
+role: my-worker-function-role or LabRole
+upload zip: build/lambdas/alert-dispatcher.zip
+handler: index.handler
+memory: 256 MB
+timeout: 30 seconds
+X-Ray active tracing: ON
+```
+
+Environment variables:
+
+```text
+AWS_REGION=us-east-1
+SNS_TOPIC_ARN=arn:aws:sns:us-east-1:<account-id>:my-app-topic
+TABLE_NAME=my-app-table
+```
+
+Add trigger:
+
+```text
+source: SQS
+queue: my-app-queue
+batch size: 10
+batch window: 5 seconds
+report batch item failures: ON if available
+```
+
+### B9. API Gateway
+
+```text
+API Gateway -> Create API
+type: HTTP API
+name: safetrace-http-api
+integration: Lambda my-api-function
+route: $default
+stage: $default
+auto deploy: ON
+CORS:
+  origins: *
+  headers: content-type, authorization, x-api-key
+  methods: GET, POST, PUT, PATCH, DELETE, OPTIONS
+access logs: ON if available
+```
+
+Copy API invoke URL:
+
+```text
+https://<api-id>.execute-api.us-east-1.amazonaws.com
+```
+
+Verify:
+
+```bash
+curl -i https://<api-id>.execute-api.us-east-1.amazonaws.com/api/health
+curl -i -X POST https://<api-id>.execute-api.us-east-1.amazonaws.com/api/admin/seed
+```
+
+### B10. Build And Upload Frontend
+
+Build static Next.js output with the API Gateway URL:
+
+```bash
+cd code
+NEXT_PUBLIC_API_BASE_URL=https://<api-id>.execute-api.us-east-1.amazonaws.com \
+SAFETRACE_STATIC_EXPORT=true \
+bash scripts/build_serverless_frontend.sh
+```
+
+Upload in S3 console:
+
+```text
+bucket: group10-alzheimer-frontend-<account-id>
+upload contents of frontend_next/out/
+do not upload the out folder itself
+```
+
+Open the S3 static website endpoint.
+
+### B11. Migration From Phase A RDS
+
+```bash
+cd code/tools/postgres-to-dynamodb
+npm install
+export DATABASE_URL="postgresql://postgres:<password>@<rds-endpoint>:5432/safetrace?sslmode=require"
+export TABLE_NAME="my-app-table"
+export PHOTO_BUCKET="group10-alzheimer-photos-<account-id>"
+npm run migrate
+```
+
+### B12. Queue Demonstration
+
+Normal queue wait time can be `0-5 seconds` because Lambda drains SQS quickly.
+
+For screenshots:
+
+```text
+1. Disable the SQS trigger on my-worker-function.
+2. Submit a sighting in the frontend.
+3. Show SQS visible messages increasing.
+4. Re-enable the trigger.
+5. Show visible messages returning to zero.
+6. Show SNS email and CloudWatch worker logs.
+```
+
+### B13. Evidence
+
+```text
+S3 frontend bucket: index.html and _next assets
+S3 photo bucket: uploaded patient/sighting images
+DynamoDB table: USER, PERSON, SIGHTING, ALERT items
+Secrets Manager: safetrace/serverless/app keys, hide values
+Lambda API: zip code, environment, X-Ray active
+Lambda worker: SQS trigger, environment, X-Ray active
+API Gateway: invoke URL and $default route
+SQS: visible/in-flight/delayed metrics
+SNS: confirmed subscription and publish metric
+CloudWatch: Lambda log streams and API logs
+X-Ray: trace or service map
+Frontend: S3 website login/report/sighting flow
+```
+
+Do not mix the two phases:
+
+```text
+Phase A:
+EC2 + ALB + RDS PostgreSQL + Secrets Manager
+
+Phase B:
+S3 frontend + API Gateway + Lambda + DynamoDB + S3 photos + SQS + SNS + Secrets Manager + CloudWatch/X-Ray
 ```

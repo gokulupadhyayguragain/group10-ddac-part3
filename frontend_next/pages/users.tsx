@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import Modal from '../components/Modal';
 import Shell from '../components/Shell';
+import { apiFetch } from '../lib/api';
 import { authHeaders, readToken } from '../lib/session';
 import { User } from '../lib/types';
 import { buttonPrimary, buttonSecondary, inputClass, labelClass, panelClass } from '../lib/ui';
@@ -21,7 +22,7 @@ export default function UsersPage() {
       setMessage('Login as admin to manage users.');
       return;
     }
-    const response = await fetch('/api/admin/users', { headers: { Authorization: `Bearer ${token}` } });
+    const response = await apiFetch('/api/admin/users', { headers: { Authorization: `Bearer ${token}` } });
     const data = await response.json();
     if (!response.ok) return setMessage(data.error || 'Unable to load users.');
     setUsers(data);
@@ -36,7 +37,7 @@ export default function UsersPage() {
   async function save(event: FormEvent) {
     event.preventDefault();
     if (!selected) return;
-    const response = await fetch(`/api/admin/users/${selected.id}`, {
+    const response = await apiFetch(`/api/admin/users/${selected.id}`, {
       method: 'PATCH',
       headers: authHeaders(),
       body: JSON.stringify(form),

@@ -2,7 +2,7 @@
 
 Lambda code is used only in Task 2. Task 1 EC2/RDS does not need Lambda.
 
-Package both functions from the repo root:
+Package all functions from the repo root:
 
 ```bash
 bash scripts/package_lambdas.sh
@@ -11,30 +11,30 @@ bash scripts/package_lambdas.sh
 Upload these zip files in the Lambda console:
 
 ```text
-build/lambdas/sighting-ingest.zip
 build/lambdas/alert-dispatcher.zip
+build/lambdas/serverless-api.zip
 ```
 
-## sighting-ingest
+By default, `scripts/package_lambdas.sh` now creates only those two required zips. To also package the legacy adapter, run:
 
-API Gateway compatible Lambda that accepts a sighting alert event and sends it to SQS.
+```bash
+INCLUDE_LEGACY_INGEST=true bash scripts/package_lambdas.sh
+```
+
+## serverless-api
+
+Full Phase B backend for API Gateway. It reads Secrets Manager, stores data in DynamoDB, uploads data-URI photos to S3, and sends alert events to SQS.
 
 Deployment outline:
 
 1. Create the Lambda with Node.js 20.x runtime.
-2. Set environment variables:
-   - `AWS_REGION`
-   - `SQS_QUEUE_URL`
-   - `SIGHTING_EVENT_API_KEY` if API key protection is required.
-3. Attach an IAM policy allowing `sqs:SendMessage` on the SafeTrace queue.
-4. Create an API Gateway HTTP API route: `POST /sighting-events`.
-5. Point `SIGHTING_EVENT_API_URL` in Secrets Manager to the deployed API Gateway URL.
-
-If `SIGHTING_EVENT_API_URL` is configured, the EC2 backend posts alert events to API Gateway. If it is not configured, the backend sends directly to SQS.
+2. Set environment variable `SAFETRACE_SECRET_ID=safetrace/serverless/app`.
+3. Attach IAM permissions for Secrets Manager read, DynamoDB CRUD, S3 object put/get, SQS send/get attributes, CloudWatch metric read, CloudWatch Logs, and X-Ray.
+4. Create an API Gateway HTTP API `$default` route to this Lambda.
 
 ## alert-dispatcher
 
-Consumes messages from the SafeTrace SQS queue and publishes caregiver/community notifications to SNS.
+Consumes messages from the SafeTrace SQS queue, publishes caregiver/community notifications to SNS, and updates the DynamoDB alert item to `sent`.
 
 Deployment outline:
 
@@ -43,8 +43,11 @@ Deployment outline:
 3. Set environment variables:
    - `AWS_REGION`
    - `SNS_TOPIC_ARN`
-4. Attach an IAM policy allowing `sns:Publish` on the SafeTrace topic.
+   - `TABLE_NAME`
+4. Attach IAM policy allowing SQS consume, SNS publish, DynamoDB alert status update, CloudWatch Logs, and X-Ray.
 5. Add the SQS queue as the Lambda event source mapping.
 6. Enable partial batch response failures for safer retries.
 
-The web backend or `sighting-ingest` Lambda writes sighting alert events to SQS when `SQS_QUEUE_URL` is configured. This Lambda is the Task 2 worker that drains the queue and fans out alerts through SNS.
+## sighting-ingest Legacy Adapter
+
+This zip is kept only for old EC2 extension experiments. It is not part of the required Phase B full serverless submission. Use `serverless-api` for API Gateway traffic.

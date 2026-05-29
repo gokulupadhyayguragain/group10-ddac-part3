@@ -16,15 +16,19 @@ Task 1 and Task 2 are separate deployment stages. Start with Task 1. Add Task 2 
 | Email verification | Resend API | Sends 6-digit account verification codes during registration |
 | Monitoring | CloudWatch | EC2/application logs and basic health evidence |
 
-### Task 2: Serverless Extension
+### Task 2: Full Serverless Architecture
 
 | Area | AWS service | Purpose |
 |---|---|---|
-| Photos | S3 | Stores patient and sighting images outside the database |
-| API | API Gateway | Public event-ingestion endpoint for alert events |
-| Worker | Lambda | Ingests API Gateway events and consumes SQS messages |
+| Frontend | S3 | Hosts exported Next.js static files |
+| Photos | S3 | Stores patient, avatar, and sighting images outside the database |
+| API | API Gateway | Public HTTP API for all `/api/*` application requests |
+| Backend | Lambda | `serverless-api` implements the SafeTrace API |
+| Database | DynamoDB | Stores users, missing persons, sightings, and alerts |
 | Queue | SQS | Buffers sighting alert events |
+| Worker | Lambda | `alert-dispatcher` consumes SQS messages |
 | Notifications | SNS | Sends email/SMS alert broadcasts |
+| Secrets | Secrets Manager | Stores Lambda runtime values |
 | Monitoring | CloudWatch and X-Ray | Serverless logs, metrics, traces, and report screenshots |
 
 ## 2. Secrets Manager Values
@@ -46,16 +50,16 @@ Task 1 minimum secret:
 }
 ```
 
-Task 2 adds these values to the same secret:
+Task 2 full serverless creates a separate secret named `safetrace/serverless/app` with:
 
 ```json
 {
-  "S3_BUCKET": "safetrace-photo-uploads-bucket",
-  "S3_PUBLIC_BASE_URL": "https://<optional-cloudfront-domain>",
-  "SIGHTING_EVENT_API_URL": "https://<api-id>.execute-api.us-east-1.amazonaws.com/sighting-events",
-  "SIGHTING_EVENT_API_KEY": "<optional-shared-demo-key>",
-  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/<account>/SafeTraceSightingQueue",
-  "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:<account>:SafeTraceAlertsTopic"
+  "TABLE_NAME": "<dynamodb-table>",
+  "PHOTO_BUCKET": "<private-photo-bucket>",
+  "SQS_QUEUE_URL": "<sqs-queue-url>",
+  "SNS_TOPIC_ARN": "<sns-topic-arn>",
+  "JWT_SECRET": "<generated>",
+  "CORS_ORIGIN": "*"
 }
 ```
 
@@ -72,7 +76,7 @@ SAFETRACE_SECRET_ID=safetrace/prod/app
 AWS_REGION=us-east-1
 ```
 
-Task 1 EC2 role only needs `secretsmanager:GetSecretValue`. For Task 2, add `s3:PutObject`, `s3:GetObject`, `sqs:SendMessage`, `sqs:GetQueueAttributes`, and `cloudwatch:GetMetricStatistics`. Lambda/SNS permissions belong to the Lambda execution roles, not the basic Task 1 server deployment.
+Task 1 EC2 role only needs `secretsmanager:GetSecretValue`. Task 2 permissions belong to the two Lambda roles created in the AWS Console GUI runbook.
 
 ## 4. Application Endpoints
 
@@ -84,11 +88,9 @@ Task 1 EC2 role only needs `secretsmanager:GetSecretValue`. For Task 2, add `s3:
 | `POST /api/auth/resend-verification` | Rate-limited resend for pending accounts |
 | `POST /api/persons` | Creates a missing Alzheimer patient report |
 | `POST /api/sightings` | Creates a community sighting and enqueues an alert |
-| `POST /api/uploads/photo` | Multipart S3 photo upload endpoint, field name `file` |
 | `GET /api/admin/cloud-status` | Admin-only SQS/S3/SNS/Secrets status for demonstrations |
-| `POST /sighting-events` | API Gateway route to the `sighting-ingest` Lambda |
 
-The report and sighting forms can send photo data URLs; the backend converts them to S3 objects when `S3_BUCKET` is configured. The upload endpoint exists for direct multipart uploads and returns `{ key, url }`.
+The report and sighting forms can send photo data URLs; the Phase B Lambda API converts them to S3 objects in the private photo bucket.
 
 ## 5. Task 2 Queue Demonstration
 
@@ -106,8 +108,8 @@ Use the Admin page to show real queue data. Login as admin, open Admin, and capt
 For a live demo:
 
 1. Submit a sighting from the Search page.
-2. Confirm the backend creates the database sighting and alert row.
-3. Confirm API Gateway receives the event if `SIGHTING_EVENT_API_URL` is configured.
+2. Confirm API Gateway invokes `serverless-api`.
+3. Confirm DynamoDB creates the sighting and alert item.
 4. Confirm SQS receives the event.
 5. Confirm the Lambda `alert-dispatcher` function consumes the message.
 6. Confirm SNS publishes the notification.
@@ -120,12 +122,12 @@ The `0-5 seconds` target is a demonstration expectation for a healthy demo queue
 
 Capture these screenshots for the final report:
 
-- EC2 instance running Docker containers
-- RDS endpoint and private security group rule
-- S3 bucket containing uploaded patient/sighting photos
-- API Gateway route `POST /sighting-events` integrated with Lambda
+- S3 frontend bucket containing exported static files
+- S3 photo bucket containing uploaded patient/sighting photos
+- DynamoDB table with `USER`, `PERSON`, `SIGHTING`, and `ALERT` items
+- API Gateway HTTP API integrated with `serverless-api`
 - SQS queue metrics: visible messages, in-flight messages, and oldest message age
-- Lambda trigger connected to SQS and Lambda logs showing processed message IDs
+- Lambda API and worker logs showing processed requests/message IDs
 - SNS topic subscriptions and publish metric
 - Admin page AWS queue status panel
 - CloudWatch dashboard or metric graphs

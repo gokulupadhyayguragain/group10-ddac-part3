@@ -9,12 +9,13 @@ Use this as the final runbook before recording videos or submitting the ZIP/repo
 | Selected one problem statement | Scenario 3: Alzheimer wandering and missing elderly persons |
 | Interactive responsive frontend | Next.js/Tailwind UI in `frontend_next` |
 | Backend workflows | Express/TypeScript API in `backend_ts` |
-| AWS cloud database | RDS PostgreSQL using `DATABASE_URL` from Secrets Manager |
+| Task 1 cloud database | RDS PostgreSQL using `DATABASE_URL` from Secrets Manager |
+| Task 2 cloud database | DynamoDB single-table design in the serverless stack |
 | AWS compute deployment | EC2 running the single `docker-compose.yml` stack |
 | Secure account verification | Resend API key loaded from Secrets Manager and rate-limited verification endpoints |
-| Task 2 storage integration | S3 upload through patient/sighting images and `/api/uploads/photo` |
-| Task 2 serverless/microservice integration | API Gateway -> `sighting-ingest` Lambda -> SQS -> `alert-dispatcher` Lambda -> SNS |
-| Monitoring | CloudWatch metrics/logs and optional X-Ray service map |
+| Task 2 storage integration | S3 frontend bucket and S3 private photo bucket |
+| Task 2 serverless/microservice integration | S3 frontend -> API Gateway -> `serverless-api` Lambda -> DynamoDB/S3/SQS -> `alert-dispatcher` Lambda -> SNS |
+| Monitoring | CloudWatch metrics/logs and X-Ray traces |
 | Workload matrix | `assignments/WORKLOAD.docx` and generator scripts |
 | Final report | `assignments/NP069584-NP069822-NP069596-NP069840-CT071-3-3-DDAC-REPORT.docx` |
 
@@ -69,40 +70,25 @@ Deploy in two separate phases. Do not present Task 1 as serverless.
    - Login as admin after seeding.
    - Demonstrate report, search, sightings, alerts, admin, profile.
 
-### Phase B: Task 2 Serverless Extension
+### Phase B: Task 2 Full Serverless
 
-1. Create S3 bucket.
-   - Bucket for patient and sighting photos.
-   - Use least-privilege IAM for `s3:PutObject` and `s3:GetObject`.
-   - Use CloudFront or `S3_PUBLIC_BASE_URL` if public object URLs need a cleaner domain.
+1. Build the full serverless architecture from the AWS Management Console using `docs/AWS_ACADEMY_SERVERLESS_GUI_CONSOLE.md`.
+   - It creates S3 frontend, S3 photos, DynamoDB, API Gateway, Lambda API, Lambda worker, SQS, SNS, Secrets Manager, CloudWatch logs, and X-Ray tracing.
 
-2. Create SQS queue.
-   - Standard queue is enough for the demo.
-   - Add a dead-letter queue if time allows.
-   - Recommended visibility timeout: `30` seconds.
+2. Build and upload the frontend.
+   - Build `frontend_next` with `NEXT_PUBLIC_API_BASE_URL=<api-gateway-url>`.
+   - Upload the exported `out/` folder contents to the S3 frontend bucket.
 
-3. Create SNS topic.
-   - Add email/SMS subscriptions.
-   - Confirm email subscriptions before demo.
+3. Seed or migrate data.
+   - Seed demo data with `POST /api/admin/seed`.
+   - Optional real migration: `tools/postgres-to-dynamodb` copies RDS PostgreSQL records into DynamoDB and moves data-URI photos into S3.
 
-4. Deploy Lambda functions.
-   - `lambdas/sighting-ingest`: API Gateway event ingestion to SQS.
-   - `lambdas/alert-dispatcher`: SQS consumer to SNS.
-   - Runtime: Node.js 20.x.
-   - Enable CloudWatch Logs.
-   - Enable X-Ray active tracing if X-Ray screenshots are required.
-
-5. Create API Gateway HTTP API.
-   - Route: `POST /sighting-events`.
-   - Integration: `safetrace-sighting-ingest` Lambda.
-   - Enable CORS for the frontend domain.
-
-6. Add Task 2 values to Secrets Manager.
-   - Add `S3_BUCKET`, `SIGHTING_EVENT_API_URL`, `SQS_QUEUE_URL`, and `SNS_TOPIC_ARN`.
-   - Restart the backend container so it reloads the secret.
-
-7. Verify the extension.
-   - Submit a sighting and verify queue/Lambda/SNS.
+4. Verify the full serverless path.
+   - Open the S3 website URL.
+   - Login as `admin@example.com / password`.
+   - Create a missing-person report with a photo.
+   - Submit a sighting.
+   - Verify DynamoDB item creation, S3 photo object creation, SQS message flow, Lambda worker log, and SNS publish.
 
 ## 4. Screenshot Evidence Required
 
@@ -112,9 +98,11 @@ Capture screenshots for the final report:
 - Docker containers running on EC2.
 - RDS endpoint with private security group rule.
 - Secrets Manager secret name and key list, without exposing secret values. Include `RESEND_API_KEY`, but do not show its value.
-- S3 bucket objects after uploading patient/sighting photos.
-- API Gateway route `POST /sighting-events`.
-- Lambda functions and environment variable names, without exposing values.
+- S3 frontend bucket showing `index.html` and `_next` assets.
+- S3 photo bucket objects after uploading patient/sighting photos.
+- DynamoDB table items for users, persons, sightings, and alerts.
+- API Gateway HTTP API invoke URL.
+- Lambda API and worker functions with environment variable names, without exposing values.
 - Lambda CloudWatch log stream showing processed event IDs.
 - SQS queue metrics: visible, in-flight, delayed, oldest message age.
 - SNS topic subscriptions and publish metric.
@@ -152,12 +140,12 @@ Keep the report under 40 pages and 4000 words.
 
 ## 7. Do Not Claim
 
-Do not claim DynamoDB, Cognito, RDS Data API, FastAPI, Vite, PM2, or unmeasured latency numbers unless those services are actually deployed and screenshots are available.
+Do not claim Cognito, RDS Data API, FastAPI, Vite, PM2, Step Functions, or unmeasured latency numbers unless those services are actually deployed and screenshots are available.
 
 The truthful architecture is split by task:
 
 - Task 1: Next.js + Express + EC2 + RDS PostgreSQL + Secrets Manager.
-- Task 2: S3 + API Gateway + Lambda + SQS + SNS + CloudWatch/X-Ray added on top of the Task 1 app.
+- Task 2: S3 frontend + S3 photos + API Gateway + Lambda API + DynamoDB + SQS + Lambda worker + SNS + Secrets Manager + CloudWatch/X-Ray.
 
 ## 8. Secret Hygiene
 

@@ -591,25 +591,18 @@ Backend exits immediately on a public test VM:
   production user-data expects Secrets Manager/RDS; use aws-user-data-local-test.sh for a throwaway public VM
 ```
 
-## 11. Task 2 Serverless Values
+## 11. Task 2 Full Serverless
 
-After Phase A works, add these values to the same secret:
+This CloudShell file is for repairing or building **Phase A serverful** only.
 
-```json
-{
-  "S3_BUCKET": "group10-alzheimer-photos-<account-id>",
-  "S3_PUBLIC_BASE_URL": "",
-  "SIGHTING_EVENT_API_URL": "https://<api-id>.execute-api.us-east-1.amazonaws.com/sighting-events",
-  "SIGHTING_EVENT_API_KEY": "<openssl rand -hex 24>",
-  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/<account-id>/my-app-queue",
-  "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:<account-id>:my-app-topic"
-}
+For **Phase B full serverless**, use the AWS Management Console GUI runbook:
+
+```text
+docs/AWS_ACADEMY_SERVERLESS_GUI_CONSOLE.md
 ```
 
-Restart backend containers after updating the secret:
+Do not add Phase B values to the Phase A `safetrace/prod/app` secret. Phase B uses a separate secret:
 
-```bash
-aws ssm start-session --target <instance-id>
-cd /home/ubuntu/safetrace
-sudo docker compose restart backend
+```text
+safetrace/serverless/app
 ```

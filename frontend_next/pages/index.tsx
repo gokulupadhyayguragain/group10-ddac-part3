@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import Shell from '../components/Shell';
+import { apiFetch } from '../lib/api';
 import { Alert, Person, Sighting } from '../lib/types';
 import { buttonPrimary, buttonSecondary, formatDate, panelClass, statusClass } from '../lib/ui';
 
@@ -11,9 +12,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     void Promise.all([
-      fetch('/api/persons').then((response) => response.json()).then(setPersons),
-      fetch('/api/sightings').then((response) => response.json()).then(setSightings),
-      fetch('/api/alerts').then((response) => response.json()).then(setAlerts),
+      apiFetch('/api/persons').then((response) => response.json()).then(setPersons),
+      apiFetch('/api/sightings').then((response) => response.json()).then(setSightings),
+      apiFetch('/api/alerts').then((response) => response.json()).then(setAlerts),
     ]);
   }, []);
 

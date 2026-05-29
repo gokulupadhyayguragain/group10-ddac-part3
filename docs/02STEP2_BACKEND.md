@@ -24,7 +24,7 @@ The backend loads the real runtime values from AWS Secrets Manager:
 - `AUTH_VERIFICATION_TTL_MINUTES`
 - `TRUST_PROXY`
 - optional Google OAuth values
-- Task 2 only: `S3_BUCKET`, `SIGHTING_EVENT_API_URL`, `SQS_QUEUE_URL`, `SNS_TOPIC_ARN`
+- Phase B full serverless uses a separate Lambda backend and a separate Secrets Manager secret.
 
 Use `docs/10SECRETS_MANAGER_VALUES.md` for the complete JSON.
 
@@ -45,7 +45,7 @@ For host-based development, use `npm run dev` inside `backend_ts`, but the prefe
 - `/api/sightings/*` for sightings and lookup
 - `/api/alerts/*` for alert history
 - `/api/admin/*` for seed and user management
-- Task 2 only: `/api/uploads/photo` for authenticated multipart S3 photo uploads
+- Phase A optional extension only: `/api/uploads/photo` for authenticated multipart S3 photo uploads
 
 ## 5. Data model
 The backend creates the required PostgreSQL tables on startup and keeps the schema aligned with the app routes.

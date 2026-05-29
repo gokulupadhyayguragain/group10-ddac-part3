@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useMemo, useState } from 'react';
 import Drawer from '../components/Drawer';
 import Modal from '../components/Modal';
 import Shell from '../components/Shell';
+import { apiFetch } from '../lib/api';
 import { fileToDataUrl } from '../lib/file';
 import { authHeaders } from '../lib/session';
 import { Person, Sighting } from '../lib/types';
@@ -52,8 +53,8 @@ export default function SearchPage() {
 
   async function loadData() {
     const [personData, sightingData] = await Promise.all([
-      fetch('/api/persons').then((response) => response.json()),
-      fetch('/api/sightings').then((response) => response.json()),
+      apiFetch('/api/persons').then((response) => response.json()),
+      apiFetch('/api/sightings').then((response) => response.json()),
     ]);
     setPersons(personData);
     setSightings(sightingData);
@@ -81,7 +82,7 @@ export default function SearchPage() {
     event.preventDefault();
     setBusy(true);
     setMessage('');
-    const response = await fetch('/api/sightings', {
+    const response = await apiFetch('/api/sightings', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({

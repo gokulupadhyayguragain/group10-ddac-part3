@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FormEvent, useState } from 'react';
 import Shell from '../components/Shell';
+import { apiFetch } from '../lib/api';
 import { buttonPrimary, buttonSecondary, inputClass, labelClass, panelClass } from '../lib/ui';
 
 export default function RegisterPage() {
@@ -17,7 +18,7 @@ export default function RegisterPage() {
     event.preventDefault();
     setBusy(true);
     setMessage('');
-    const response = await fetch('/api/auth/register', {
+    const response = await apiFetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
@@ -34,7 +35,7 @@ export default function RegisterPage() {
     event.preventDefault();
     setBusy(true);
     setMessage('');
-    const response = await fetch('/api/auth/verify-email', {
+    const response = await apiFetch('/api/auth/verify-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: form.email, code }),
@@ -49,7 +50,7 @@ export default function RegisterPage() {
   async function resendCode() {
     setBusy(true);
     setMessage('');
-    const response = await fetch('/api/auth/resend-verification', {
+    const response = await apiFetch('/api/auth/resend-verification', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: form.email }),

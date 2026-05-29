@@ -25,13 +25,14 @@ Registration now uses rate-limited email verification. In AWS, put `RESEND_API_K
 | `02STEP2_BACKEND.md` | Backend service notes |
 | `03STEP3_FRONTEND.md` | Frontend service notes |
 | `04STEP4_AWS_DEPLOY.md` | Task 1 EC2 / RDS server deployment |
-| `05STEP5_SERVERLESS.md` | Task 2 serverless extension |
+| `05STEP5_SERVERLESS.md` | Task 2 full serverless architecture |
 | `06STEP6_MONITORING.md` | CloudWatch and X-Ray |
 | `07CLOUD_DEPLOYMENT_REQUIREMENTS.md` | Final cloud requirement checklist |
 | `08DEVOPS_ARCHITECTURE.md` | Secrets and CI/CD architecture |
 | `09FINAL_SUBMISSION_CHECKLIST.md` | Final assignment audit and evidence checklist |
 | `10SECRETS_MANAGER_VALUES.md` | Complete Secrets Manager JSON and value sources |
 | `AWS_ACADEMY_SHORT_BUILD_SHEET.md` | Short AWS Academy VPC/ALB/ASG/RDS build sheet |
+| `AWS_ACADEMY_SERVERLESS_GUI_CONSOLE.md` | Task 2 serverless GUI console build sheet |
 | `CLOUDSHELL_VERSION.md` | AWS CloudShell command version of the serverful build |
 | `GITHUB_AND_LAMBDA_DEPLOY.md` | GitHub push and Lambda zip upload guide |
 | `references_apa7.xml` | APA 7 references |
@@ -49,4 +50,4 @@ Registration now uses rate-limited email verification. In AWS, put `RESEND_API_K
 For Task 1 cloud deployment, do not enable `local-db`; set only `AWS_REGION` and `SAFETRACE_SECRET_ID` in `.env`. Put the full runtime JSON in AWS Secrets Manager.
 
 ## AWS Services Used
-Task 1 is the full server-based app: EC2 + RDS PostgreSQL. Task 2 is a separate extension: S3 photo storage, API Gateway, Lambda, SQS, SNS, Secrets Manager, CloudWatch, and X-Ray.
+Task 1 is the full server-based app: EC2 + RDS PostgreSQL. Task 2 is a separate full serverless path: S3 frontend, S3 photo storage, API Gateway, Lambda API, DynamoDB, SQS, Lambda worker, SNS, Secrets Manager, CloudWatch, and X-Ray.

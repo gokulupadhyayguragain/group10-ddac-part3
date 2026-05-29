@@ -38,20 +38,32 @@ Add these only if Google login will be demonstrated:
 }
 ```
 
-## Task 2 Secret Additions
+## Phase B Full Serverless Secret
 
-Add these after Task 1 is working:
+Do not mix Phase B values into the Phase A EC2 secret. The full serverless stack creates and uses a separate secret named:
+
+```text
+safetrace/serverless/app
+```
+
+It contains:
 
 ```json
 {
-  "S3_BUCKET": "safetrace-photo-uploads-bucket",
-  "S3_PUBLIC_BASE_URL": "https://<optional-cloudfront-domain>",
-  "SIGHTING_EVENT_API_URL": "https://<api-id>.execute-api.us-east-1.amazonaws.com/sighting-events",
-  "SIGHTING_EVENT_API_KEY": "<output-of-openssl-rand-hex-24>",
-  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/<account-id>/SafeTraceSightingQueue",
-  "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:<account-id>:SafeTraceAlertsTopic"
+  "TABLE_NAME": "<DynamoDB table name>",
+  "PHOTO_BUCKET": "<private photo bucket>",
+  "SQS_QUEUE_URL": "<alert queue URL>",
+  "SNS_TOPIC_ARN": "<alert topic ARN>",
+  "AWS_REGION": "us-east-1",
+  "CORS_ORIGIN": "*",
+  "AUTH_DEV_EXPOSE_VERIFICATION_CODE": "true",
+  "RESEND_API_KEY": "<optional-resend-api-key>",
+  "RESEND_FROM_EMAIL": "<optional-verified-resend-sender>",
+  "JWT_SECRET": "<generated>"
 }
 ```
+
+The `serverless-api` Lambda reads this secret through `SAFETRACE_SECRET_ID`. Set `AUTH_DEV_EXPOSE_VERIFICATION_CODE=true` for classroom demos where you need the code visible in the response. Set it to `false` when `RESEND_API_KEY` and `RESEND_FROM_EMAIL` are configured for real email delivery.
 
 ## Where Each Value Comes From
 
@@ -68,12 +80,12 @@ Add these after Task 1 is working:
 | `GOOGLE_CLIENT_ID` | Google Cloud Console -> APIs & Services -> Credentials -> OAuth client |
 | `GOOGLE_CLIENT_SECRET` | Same Google OAuth client details page |
 | `GOOGLE_OAUTH_CALLBACK_URL` | Public backend callback URL, usually `https://<domain>/api/auth/google/callback` |
-| `S3_BUCKET` | S3 bucket name created for Task 2 photos |
-| `S3_PUBLIC_BASE_URL` | Optional CloudFront distribution domain or public S3 base URL |
-| `SIGHTING_EVENT_API_URL` | API Gateway HTTP API invoke URL for `POST /sighting-events` |
-| `SIGHTING_EVENT_API_KEY` | Run `openssl rand -hex 24`; optional demo shared key |
+| `TABLE_NAME` | DynamoDB console -> table name. Use `my-app-table` for the GUI runbook |
+| `PHOTO_BUCKET` | S3 console -> private photo bucket. Use `group10-alzheimer-photos-<account-id>` |
+| `S3_BUCKET` | Legacy Phase A extension alias for photo bucket; use `PHOTO_BUCKET` in Phase B |
 | `SQS_QUEUE_URL` | SQS console -> queue -> URL |
 | `SNS_TOPIC_ARN` | SNS console -> topic -> ARN |
+| `CORS_ORIGIN` | Use `*` for simple AWS Academy demo or the S3 website URL for stricter production |
 
 ## AWS CLI Create Command
 

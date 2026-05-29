@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react';
 import Shell from '../components/Shell';
+import { apiFetch } from '../lib/api';
 import { fileToDataUrl } from '../lib/file';
 import { authHeaders, clearToken, readToken, UserProfile } from '../lib/session';
 import { buttonPrimary, buttonSecondary, inputClass, labelClass, panelClass } from '../lib/ui';
@@ -36,7 +37,7 @@ export default function ProfilePage() {
       return;
     }
     try {
-      const response = await fetch('/api/auth/profile', { headers: { Authorization: `Bearer ${token}` } });
+      const response = await apiFetch('/api/auth/profile', { headers: { Authorization: `Bearer ${token}` } });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Unable to load profile');
       setProfile(data);
@@ -62,7 +63,7 @@ export default function ProfilePage() {
     event.preventDefault();
     setBusy(true);
     setMessage('');
-    const response = await fetch('/api/auth/profile', {
+    const response = await apiFetch('/api/auth/profile', {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify({

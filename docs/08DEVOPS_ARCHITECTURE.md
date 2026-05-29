@@ -23,16 +23,16 @@ Task 1 minimum:
 }
 ```
 
-Task 2 extension values:
+Task 2 full serverless values are created in a separate secret, for example `safetrace/serverless/app`:
 
 ```json
 {
-  "S3_BUCKET": "safetrace-photo-uploads-bucket",
-  "S3_PUBLIC_BASE_URL": "https://<optional-cloudfront-domain>",
-  "SIGHTING_EVENT_API_URL": "https://<api-id>.execute-api.us-east-1.amazonaws.com/sighting-events",
-  "SIGHTING_EVENT_API_KEY": "<optional-shared-demo-key>",
-  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/<account>/SafeTraceSightingQueue",
-  "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:<account>:SafeTraceAlertsTopic"
+  "TABLE_NAME": "<dynamodb-table>",
+  "PHOTO_BUCKET": "<photo-bucket>",
+  "SQS_QUEUE_URL": "<sqs-queue-url>",
+  "SNS_TOPIC_ARN": "<sns-topic-arn>",
+  "JWT_SECRET": "<generated>",
+  "CORS_ORIGIN": "*"
 }
 ```
 
@@ -72,8 +72,7 @@ For a clean AWS-native pipeline, split build and deployment by stage:
 5. **Deploy**:
    - simple coursework path: SSM Run Command to the EC2 host, then `docker compose pull && docker compose up -d`
    - stronger production path: ECS service deployment using image definitions
-6. **Task 2 Lambda deploy**: package `lambdas/alert-dispatcher` and update the Lambda code through CodeBuild or CodePipeline.
-   Also package `lambdas/sighting-ingest` if API Gateway is used for event ingestion.
+6. **Task 2 serverless deploy**: for AWS Academy, create the services through the Management Console using `docs/AWS_ACADEMY_SERVERLESS_GUI_CONSOLE.md`; for production automation later, package `lambdas/serverless-api` and `lambdas/alert-dispatcher`, build the static frontend with `NEXT_PUBLIC_API_BASE_URL`, and sync `frontend_next/out/` to the S3 frontend bucket.
 
 ## 3. IAM Roles
 
@@ -83,22 +82,24 @@ Task 1 EC2 instance role needs:
 
 - `secretsmanager:GetSecretValue`
 
-Task 2 EC2 additions need:
+Task 2 Lambda API role needs:
 
-- `s3:PutObject`
-- `s3:GetObject`
-- `sqs:SendMessage`
-- `sqs:GetQueueAttributes`
+- `secretsmanager:GetSecretValue`
+- DynamoDB CRUD on the SafeTrace table
+- `s3:PutObject` and `s3:GetObject` on the photo bucket
+- `sqs:SendMessage` and `sqs:GetQueueAttributes`
 - `cloudwatch:GetMetricStatistics`
+- CloudWatch Logs and X-Ray permissions
 
-Lambda role needs:
+Task 2 worker role needs:
 
-- for `sighting-ingest`: `sqs:SendMessage`
 - `sqs:ReceiveMessage`
 - `sqs:DeleteMessage`
 - `sqs:GetQueueAttributes`
+- `sqs:ChangeMessageVisibility`
 - `sns:Publish`
-- CloudWatch Logs permissions
+- `dynamodb:UpdateItem` for alert status updates
+- CloudWatch Logs and X-Ray permissions
 
 CodeBuild role needs:
 
@@ -120,6 +121,6 @@ CodeBuild role needs:
 For this assignment, deploy in two phases:
 
 1. **Task 1 server app**: EC2 + Docker Compose + RDS PostgreSQL + Secrets Manager.
-2. **Task 2 serverless extension**: S3 + API Gateway + Lambda + SQS + SNS + CloudWatch/X-Ray.
+2. **Task 2 full serverless**: S3 frontend + S3 photos + API Gateway + Lambda API + DynamoDB + SQS + Lambda worker + SNS + Secrets Manager + CloudWatch/X-Ray.
 
 For a real production client, move the containers from EC2 Compose to **ECS Fargate behind an Application Load Balancer**, keep RDS private, put static images behind CloudFront if needed, and use CodePipeline/CodeBuild/ECR for repeatable releases.

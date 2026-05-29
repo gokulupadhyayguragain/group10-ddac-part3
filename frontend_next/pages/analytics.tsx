@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Shell from '../components/Shell';
+import { apiFetch } from '../lib/api';
 import { readToken } from '../lib/session';
 import { panelClass } from '../lib/ui';
 
@@ -24,7 +25,7 @@ export default function AnalyticsPage() {
       setMessage('Login as admin to view analytics.');
       return;
     }
-    const response = await fetch('/api/admin/dashboard', { headers: { Authorization: `Bearer ${token}` } });
+    const response = await apiFetch('/api/admin/dashboard', { headers: { Authorization: `Bearer ${token}` } });
     const data = await response.json();
     if (!response.ok) return setMessage(data.error || 'Unable to load analytics.');
     setStats(data);

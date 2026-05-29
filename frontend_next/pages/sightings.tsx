@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Drawer from '../components/Drawer';
 import Shell from '../components/Shell';
+import { apiFetch } from '../lib/api';
 import { authHeaders } from '../lib/session';
 import { Sighting } from '../lib/types';
 import { buttonSecondary, formatDate, panelClass, statusClass } from '../lib/ui';
@@ -15,13 +16,13 @@ export default function SightingsPage() {
   }, []);
 
   async function loadSightings() {
-    const response = await fetch('/api/sightings');
+    const response = await apiFetch('/api/sightings');
     setSightings(await response.json());
   }
 
   async function setStatus(sighting: Sighting, status: string) {
     setMessage('');
-    const response = await fetch(`/api/sightings/${sighting.id}/status`, {
+    const response = await apiFetch(`/api/sightings/${sighting.id}/status`, {
       method: 'PATCH',
       headers: authHeaders(),
       body: JSON.stringify({ status }),
@@ -35,7 +36,7 @@ export default function SightingsPage() {
 
   async function deleteSighting(sighting: Sighting) {
     if (!window.confirm(`Delete sighting #${sighting.id}?`)) return;
-    const response = await fetch(`/api/sightings/${sighting.id}`, { method: 'DELETE', headers: authHeaders() });
+    const response = await apiFetch(`/api/sightings/${sighting.id}`, { method: 'DELETE', headers: authHeaders() });
     const data = await response.json();
     if (!response.ok) return setMessage(data.error || 'Delete failed.');
     setMessage(`Sighting #${data.id} deleted.`);

@@ -1,112 +1,154 @@
-# STEP 5 - Serverless Integration and Architecture (Task 2)
+# STEP 5 - Full Serverless Architecture (Task 2)
 
-Task 2 is a separate serverless extension added after the Task 1 EC2/RDS server app is working. The main web application remains server-based on EC2; Task 2 only offloads photo storage and alert-event processing into cloud services.
+Task 2 is a separate Phase B architecture. Do not replace or break the working Phase A EC2/RDS app. Phase B proves the required AWS serverless services with a separate deployment path.
 
-Task 2 event flow:
+## Required Services
 
-```mermaid
-graph TD
-    A[SafeTrace Frontend] -->|Submit sighting| B[Express Backend on EC2]
-    B -->|Write sighting + alert rows| C[(RDS PostgreSQL)]
-    B -->|Task 2 photo storage| D[S3: photo bucket]
-    B -->|POST event when configured| E[API Gateway: POST /sighting-events]
-    E --> F[Lambda: sighting-ingest]
-    B -->|Direct fallback SendMessage| G[SQS: SafeTraceSightingQueue]
-    F -->|SendMessage| G
-    G -->|Event source mapping| H[Lambda: alert-dispatcher]
-    H -->|Publish| I[SNS: SafeTraceAlertsTopic]
-    I -->|Email or SMS| J[Caregiver / responder subscribers]
+Use all of these:
+
+1. **S3 frontend bucket** - hosts exported Next.js static files from `frontend_next/out`.
+2. **S3 photo bucket** - stores patient, avatar, and sighting images that were previously kept as local/data URL content.
+3. **Lambda API backend** - `lambdas/serverless-api`, called by API Gateway.
+4. **Lambda worker** - `lambdas/alert-dispatcher`, triggered by SQS.
+5. **DynamoDB** - single-table NoSQL replacement for PostgreSQL in Phase B.
+6. **API Gateway** - HTTP API routing browser requests to the API Lambda.
+7. **CloudWatch** - Lambda logs, API access logs, metrics, and SQS queue metrics.
+8. **X-Ray** - active tracing on the API and worker Lambda functions.
+9. **SQS** - queues alert events.
+10. **SNS** - sends caregiver/community alert notifications.
+11. **Secrets Manager** - stores Lambda runtime values such as `JWT_SECRET`, `TABLE_NAME`, `PHOTO_BUCKET`, and `SQS_QUEUE_URL`.
+
+## Phase B Flow
+
+```text
+Browser
+-> S3 frontend bucket static website
+-> API Gateway HTTP API
+-> serverless-api Lambda
+-> DynamoDB single-table data store
+-> S3 photo bucket for images
+-> SQS alert queue
+-> alert-dispatcher Lambda worker
+-> SNS alert topic
+-> email/SMS subscribers
 ```
 
-The Lambda source code lives in `lambdas/sighting-ingest` and `lambdas/alert-dispatcher`. These Lambdas are not replacements for the EC2 backend; they are supporting microservices for the alert pipeline.
+CloudWatch captures API/Lambda/SQS/SNS logs and metrics. X-Ray traces Lambda calls.
 
-Last reviewed: 2026-05-28
+## Code Folders
 
-## 1. SQS Queue
+```text
+frontend_next/                         Next.js UI; static export for S3
+lambdas/serverless-api/                API Gateway backend using DynamoDB/S3/SQS/Secrets
+lambdas/alert-dispatcher/              SQS worker that publishes SNS and updates DynamoDB alert status
+docs/AWS_ACADEMY_SERVERLESS_GUI_CONSOLE.md  AWS Console click-by-click build sheet
+scripts/package_lambdas.sh             Builds Lambda zip files for console upload
+scripts/build_serverless_frontend.sh   Builds S3 static frontend output
+tools/postgres-to-dynamodb/            RDS PostgreSQL -> DynamoDB/S3 migration tool
+```
 
-Create an SQS standard queue, for example `SafeTraceSightingQueue`.
+## DynamoDB Schema Conversion
 
-Recommended demo settings:
+Phase A PostgreSQL tables are converted into one DynamoDB table:
 
-- visibility timeout: `30` seconds
-- receive message wait time: `0-5` seconds
-- dead-letter queue: optional but recommended
+```text
+users            -> PK USER#<id>,     SK META, entityType USER
+missing_persons  -> PK PERSON#<id>,   SK META, entityType PERSON
+sightings        -> PK SIGHTING#<id>, SK META, entityType SIGHTING
+alerts           -> PK ALERT#<id>,    SK META, entityType ALERT
+```
 
-The application reads `SQS_QUEUE_URL` from Secrets Manager or environment variables. When a community sighting is submitted, the backend sends a JSON alert event to this queue.
+Each item also stores:
 
-## 2. API Gateway and Ingest Lambda
+```text
+GSI1PK = entity type
+GSI1SK = created_at#id
+```
 
-Create an API Gateway HTTP API route:
+This supports listing each entity type and keeps the Task 2 DynamoDB model simple enough for AWS Academy while still being a real NoSQL schema.
 
-- method: `POST`
-- path: `/sighting-events`
-- integration: Lambda function `safetrace-sighting-ingest`
+## Deployment
 
-The `sighting-ingest` Lambda validates the event body and sends it to SQS. Set `SIGHTING_EVENT_API_URL` in Secrets Manager to the deployed API Gateway invoke URL. If API Gateway is not configured, the backend still sends directly to SQS so the web app remains operational.
+Use the AWS Console GUI runbook for Academy submission screenshots:
 
-An OpenAPI starter template is available at `infra/api-gateway-sighting-events.openapi.yaml`.
+```text
+docs/AWS_ACADEMY_SERVERLESS_GUI_CONSOLE.md
+```
 
-## 3. SNS Topic
-
-Create an SNS topic, for example `SafeTraceAlertsTopic`, and add the email/SMS subscriptions needed for the demo. Email subscriptions must be confirmed before they receive messages.
-
-The Lambda reads `SNS_TOPIC_ARN` and publishes each processed queue event to this topic.
-
-## 4. Lambda Workers
-
-Deploy both Lambda functions as Node.js 20.x functions:
+Local commands are only used to prepare upload files:
 
 ```bash
-cd lambdas/sighting-ingest
-npm install
-zip -r function.zip index.mjs package.json node_modules
-
-cd lambdas/alert-dispatcher
-npm install
-zip -r function.zip index.mjs package.json node_modules
+cd code
+bash scripts/package_lambdas.sh
 ```
 
-Create `safetrace-sighting-ingest` with:
+Upload these in Lambda console:
 
-- runtime: Node.js 20.x
-- handler: `index.handler`
-- environment variables: `AWS_REGION`, `SQS_QUEUE_URL`, optional `SIGHTING_EVENT_API_KEY`
-- IAM permission: `sqs:SendMessage` to the SafeTrace SQS queue
-- API Gateway HTTP API trigger
-
-Create `safetrace-alert-dispatcher` with:
-
-- runtime: Node.js 20.x
-- handler: `index.handler`
-- environment variables: `AWS_REGION`, `SNS_TOPIC_ARN`
-- IAM permission: `sns:Publish` to the SafeTrace SNS topic
-- event source: the SafeTrace SQS queue
-- partial batch response enabled
-- active X-Ray tracing enabled if screenshots are required
-
-## 5. Backend Cloud Adapter
-
-The Express backend uses AWS SDK clients when these values are present:
-
-```env
-AWS_REGION=us-east-1
-S3_BUCKET=safetrace-photo-uploads-bucket
-SIGHTING_EVENT_API_URL=https://<api-id>.execute-api.us-east-1.amazonaws.com/sighting-events
-SQS_QUEUE_URL=https://sqs.us-east-1.amazonaws.com/<account>/SafeTraceSightingQueue
-SNS_TOPIC_ARN=arn:aws:sns:us-east-1:<account>:SafeTraceAlertsTopic
+```text
+build/lambdas/serverless-api.zip
+build/lambdas/alert-dispatcher.zip
 ```
 
-If `SIGHTING_EVENT_API_URL` exists, the Task 1 backend posts alert events to API Gateway and `sighting-ingest` sends them to SQS. If the API URL is missing but `SQS_QUEUE_URL` exists, the backend enqueues directly to SQS and lets Lambda publish SNS. If SQS is missing but `SNS_TOPIC_ARN` exists, the backend can publish directly as a fallback. If none of these Task 2 values exist, the EC2/RDS server app still works as the Task 1 deployment.
+## Seed Data
 
-## 6. How To Demonstrate Queue Wait Time
+After creating API Gateway in the Console, copy its invoke URL and seed:
 
-For normal operation, SQS visible messages may stay at `0` because Lambda drains the queue almost immediately. Use the Admin page cloud status panel and CloudWatch metrics:
+```bash
+API_BASE_URL="https://<api-id>.execute-api.us-east-1.amazonaws.com"
+curl -i -X POST "$API_BASE_URL/api/admin/seed"
+curl -i "$API_BASE_URL/api/health"
+```
 
-- `ApproximateNumberOfMessagesVisible`
-- `ApproximateNumberOfMessagesNotVisible`
-- `ApproximateAgeOfOldestMessage`
-- Lambda `Invocations`, `Duration`, `Errors`, and `Throttles`
+Login in the frontend with:
 
-To make queue wait visible during a demo, temporarily disable the Lambda event source mapping or set Lambda reserved concurrency to `0`, submit a sighting, and refresh Admin. Visible messages should increase and oldest age should rise. Re-enable Lambda and show the queue draining back to `0`.
+```text
+admin@example.com
+password
+```
 
-The expected demo wait should usually be `0-5 seconds` after Lambda is enabled, but this is a demo target, not a guaranteed SLA.
+## Migrate Phase A RDS Data
+
+Run this only when you want to copy Phase A data into Phase B:
+
+```bash
+cd code/tools/postgres-to-dynamodb
+npm install
+
+export AWS_REGION=us-east-1
+export DATABASE_URL="postgresql://postgres:<password>@<rds-endpoint>:5432/safetrace?sslmode=require"
+export TABLE_NAME="my-app-table"
+export PHOTO_BUCKET="group10-alzheimer-photos-<account-id>"
+
+npm run migrate
+```
+
+The tool copies users, missing persons, sightings, and alerts to DynamoDB. If `photo_url` contains a data URI, it uploads the image to the photo S3 bucket and stores the S3 URL in DynamoDB.
+
+## Queue Demonstration
+
+Normal operation can show zero visible SQS messages because Lambda drains the queue quickly.
+
+For evidence:
+
+1. Temporarily disable the SQS trigger on `alert-dispatcher`, or set worker reserved concurrency to `0`.
+2. Submit a sighting in the frontend.
+3. Show SQS visible messages increasing in AWS Console and Admin cloud status.
+4. Re-enable the worker.
+5. Show messages moving to in-flight, then returning to zero.
+6. Show SNS delivery and Lambda CloudWatch logs.
+
+Expected visible queue wait for demo is normally `0-5 seconds` after the worker is enabled. That is a demo observation, not a guaranteed SLA.
+
+## Evidence Screenshots
+
+Capture:
+
+- S3 frontend bucket with exported `_next` assets and `index.html`.
+- S3 photo bucket with uploaded patient/sighting images.
+- DynamoDB table items for `USER`, `PERSON`, `SIGHTING`, and `ALERT`.
+- API Gateway route invoking Lambda.
+- Lambda API function and worker function with X-Ray active tracing enabled.
+- SQS queue metrics: visible, in-flight, delayed, oldest message age.
+- SNS topic subscription and publish metrics.
+- CloudWatch Lambda logs and API access logs.
+- X-Ray service map or trace details.

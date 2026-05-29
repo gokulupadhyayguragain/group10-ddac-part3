@@ -67,11 +67,13 @@ Task 1 serverful:
 Browser -> ALB -> EC2 Auto Scaling Group -> Docker Compose -> Backend -> RDS PostgreSQL
 ```
 
-Task 2 serverless extension:
+Task 2 full serverless:
 
 ```text
-Backend/API Gateway -> Lambda -> SQS -> Lambda worker -> SNS
+S3 frontend -> API Gateway -> Lambda API -> DynamoDB/S3 photos -> SQS -> Lambda worker -> SNS
 ```
+
+Task 2 uses all required services: two S3 buckets, Lambda, DynamoDB, API Gateway, CloudWatch/X-Ray, SQS, SNS, and Secrets Manager.
 
 ## Lambda Packaging
 
@@ -82,18 +84,20 @@ bash scripts/package_lambdas.sh
 Generated zip files:
 
 ```text
-build/lambdas/sighting-ingest.zip
 build/lambdas/alert-dispatcher.zip
+build/lambdas/serverless-api.zip
 ```
 
-Upload those zip files to AWS Lambda. Do not upload raw `index.mjs` files alone.
+For the full Phase B stack, upload `serverless-api.zip` and `alert-dispatcher.zip`. The old `sighting-ingest` adapter is optional only; package it with `INCLUDE_LEGACY_INGEST=true bash scripts/package_lambdas.sh` if you ever need it. Upload zip files to AWS Lambda; do not upload raw `index.mjs` files alone.
 
 ## Main Guides
 
 - `docs/AWS_ACADEMY_SHORT_BUILD_SHEET.md`
+- `docs/AWS_ACADEMY_SERVERLESS_GUI_CONSOLE.md`
 - `docs/CLOUDSHELL_VERSION.md`
 - `docs/INFRA_MANUAL_AWS_CONSOLE.md`
 - `docs/04STEP4_AWS_DEPLOY.md`
 - `docs/05STEP5_SERVERLESS.md`
+- `docs/SERVERLESS_README.md`
 - `docs/GITHUB_AND_LAMBDA_DEPLOY.md`
 - `docs/09FINAL_SUBMISSION_CHECKLIST.md`

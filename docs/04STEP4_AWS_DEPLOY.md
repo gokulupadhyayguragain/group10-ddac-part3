@@ -1,6 +1,6 @@
 # STEP 4 - AWS Deployment Guide (Task 1)
 
-This guide provides instructions for deploying the SafeTrace **Task 1 server-based system** onto AWS. Task 1 is the complete web application running on EC2 with RDS PostgreSQL. Do not mix this with the Task 2 serverless extension while explaining Task 1.
+This guide provides instructions for deploying the SafeTrace **Task 1 server-based system** onto AWS. Task 1 is the complete web application running on EC2 with RDS PostgreSQL. Do not mix this with the Task 2 full serverless architecture while explaining Task 1.
 
 ## Compute and Database Target
 - **Compute Layer**: AWS EC2 (t2.micro / t3.micro running Ubuntu Server 22.04/24.04 LTS) or AWS Elastic Beanstalk.
@@ -93,7 +93,7 @@ When launching a new EC2 instance, paste the contents of `aws-user-data.sh` into
    cp .env.example .env
    nano .env
    ```
-   *For Task 1 production, set only `AWS_REGION` and `SAFETRACE_SECRET_ID` in `.env`. Keep the full runtime JSON in AWS Secrets Manager using `docs/10SECRETS_MANAGER_VALUES.md`. Leave Task 2 values such as `S3_BUCKET`, `SQS_QUEUE_URL`, and `SNS_TOPIC_ARN` out of the secret until the serverless extension is deployed.*
+   *For Task 1 production, set only `AWS_REGION` and `SAFETRACE_SECRET_ID` in `.env`. Keep the full runtime JSON in AWS Secrets Manager using `docs/10SECRETS_MANAGER_VALUES.md`. Phase B full serverless uses its own secret created in the Secrets Manager console.*
    For ALB deployment, also set `FRONTEND_PORT=80` so Docker maps the frontend container to the EC2 host's port 80.
 3. Run the containers:
    ```bash

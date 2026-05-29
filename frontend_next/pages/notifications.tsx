@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react';
 import Shell from '../components/Shell';
+import { apiFetch } from '../lib/api';
 import { fileToDataUrl } from '../lib/file';
 import { authHeaders, readToken, UserProfile } from '../lib/session';
 import { buttonPrimary, inputClass, labelClass, panelClass } from '../lib/ui';
@@ -30,7 +31,7 @@ export default function NotificationsPage() {
       setMessage('Log in first to configure notification preferences.');
       return;
     }
-    const response = await fetch('/api/auth/profile', { headers: { Authorization: `Bearer ${token}` } });
+    const response = await apiFetch('/api/auth/profile', { headers: { Authorization: `Bearer ${token}` } });
     const data = await response.json();
     if (!response.ok) return setMessage(data.error || 'Unable to load profile.');
     setProfile(data);
@@ -46,7 +47,7 @@ export default function NotificationsPage() {
   async function save(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
-    const response = await fetch('/api/auth/profile', {
+    const response = await apiFetch('/api/auth/profile', {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify({ ...form, notification_prefs: prefs }),

@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import Modal from '../components/Modal';
 import Shell from '../components/Shell';
+import { apiFetch } from '../lib/api';
 import { authHeaders } from '../lib/session';
 import { Alert, Person } from '../lib/types';
 import { buttonPrimary, buttonSecondary, formatDate, inputClass, labelClass, panelClass, statusClass } from '../lib/ui';
@@ -19,8 +20,8 @@ export default function AlertsPage() {
 
   async function loadData() {
     const [alertData, personData] = await Promise.all([
-      fetch('/api/alerts').then((response) => response.json()),
-      fetch('/api/persons').then((response) => response.json()),
+      apiFetch('/api/alerts').then((response) => response.json()),
+      apiFetch('/api/persons').then((response) => response.json()),
     ]);
     setAlerts(alertData);
     setPersons(personData);
@@ -30,7 +31,7 @@ export default function AlertsPage() {
     event.preventDefault();
     setBusy(true);
     setMessage('');
-    const response = await fetch('/api/alerts', {
+    const response = await apiFetch('/api/alerts', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({ ...form, person_id: Number(form.person_id) }),
@@ -45,7 +46,7 @@ export default function AlertsPage() {
   }
 
   async function acknowledge(alert: Alert) {
-    const response = await fetch(`/api/alerts/${alert.id}/status`, {
+    const response = await apiFetch(`/api/alerts/${alert.id}/status`, {
       method: 'PATCH',
       headers: authHeaders(),
       body: JSON.stringify({ status: 'acknowledged' }),
@@ -57,7 +58,7 @@ export default function AlertsPage() {
   }
 
   async function archiveAlert(alert: Alert) {
-    const response = await fetch(`/api/alerts/${alert.id}/status`, {
+    const response = await apiFetch(`/api/alerts/${alert.id}/status`, {
       method: 'PATCH',
       headers: authHeaders(),
       body: JSON.stringify({ status: 'archived' }),
@@ -70,7 +71,7 @@ export default function AlertsPage() {
 
   async function deleteAlert(alert: Alert) {
     if (!window.confirm(`Delete alert #${alert.id}?`)) return;
-    const response = await fetch(`/api/alerts/${alert.id}`, { method: 'DELETE', headers: authHeaders() });
+    const response = await apiFetch(`/api/alerts/${alert.id}`, { method: 'DELETE', headers: authHeaders() });
     const data = await response.json();
     if (!response.ok) return setMessage(data.error || 'Delete failed.');
     setMessage(`Alert #${data.id} deleted.`);

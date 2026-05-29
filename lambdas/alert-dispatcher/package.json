@@ -8,6 +8,8 @@
     "zip": "zip -r function.zip index.mjs package.json node_modules"
   },
   "dependencies": {
-    "@aws-sdk/client-sns": "^3.953.0"
+    "@aws-sdk/client-dynamodb": "^3.953.0",
+    "@aws-sdk/client-sns": "^3.953.0",
+    "@aws-sdk/lib-dynamodb": "^3.953.0"
   }
 }

@@ -7,7 +7,7 @@ group10-ddac-part3/
   backend_ts/            Express TypeScript API
   frontend_next/         Next.js frontend
   lambdas/
-    sighting-ingest/     API Gateway -> SQS Lambda
+    serverless-api/      API Gateway -> DynamoDB/S3/SQS Lambda backend
     alert-dispatcher/    SQS -> SNS Lambda
   docker-compose.yml     EC2 app runtime
   aws-user-data.sh       EC2 bootstrap
@@ -67,18 +67,18 @@ JWT_SECRET
 RESEND_API_KEY
 RESEND_FROM_EMAIL
 FRONTEND_PUBLIC_URL
-Task 2 S3/SQS/SNS/API Gateway values later
+Task 2 full serverless values live in a separate Secrets Manager secret
 ```
 
 ## How To Upload Lambda JS
 
-Lambda JS is only for Task 2.
+Lambda JS is only for Task 2. The full serverless deployment uses `serverless-api` and `alert-dispatcher`.
 
 Source folders:
 
 ```text
-lambdas/sighting-ingest/index.mjs
 lambdas/alert-dispatcher/index.mjs
+lambdas/serverless-api/index.mjs
 ```
 
 Package locally:
@@ -90,13 +90,23 @@ bash scripts/package_lambdas.sh
 Generated zip files:
 
 ```text
-build/lambdas/sighting-ingest.zip
 build/lambdas/alert-dispatcher.zip
+build/lambdas/serverless-api.zip
 ```
 
-Upload the zip file, not the raw `index.mjs` file. Lambda needs the handler file plus `package.json`, lockfile, and `node_modules`.
+Upload `serverless-api.zip` and `alert-dispatcher.zip`, not raw `index.mjs` files.
 
-### Console Upload: sighting-ingest
+### Recommended: AWS Console Full Serverless
+
+Use the GUI guide for AWS Academy screenshots:
+
+```text
+docs/AWS_ACADEMY_SERVERLESS_GUI_CONSOLE.md
+```
+
+It creates S3 frontend, S3 photos, DynamoDB, API Gateway, Lambda API, Lambda worker, SQS, SNS, Secrets Manager, CloudWatch logs, and X-Ray tracing through the AWS Management Console.
+
+### Console Upload: serverless-api
 
 AWS Console -> Lambda -> Create function:
 
@@ -104,45 +114,40 @@ AWS Console -> Lambda -> Create function:
 Function name: my-api-function
 Runtime: Node.js 20.x
 Architecture: x86_64
-Code source: upload build/lambdas/sighting-ingest.zip
+Code source: upload build/lambdas/serverless-api.zip
 Handler: index.handler
 ```
 
 Environment:
 
 ```text
+SAFETRACE_SECRET_ID=safetrace/serverless/app
 AWS_REGION=us-east-1
-SQS_QUEUE_URL=<my-app-queue-url>
-SIGHTING_EVENT_API_KEY=<optional-shared-key>
+TABLE_NAME=my-app-table
+PHOTO_BUCKET=group10-alzheimer-photos-<account-id>
+SQS_QUEUE_URL=https://sqs.us-east-1.amazonaws.com/<account-id>/my-app-queue
+CORS_ORIGIN=*
 ```
 
 IAM permissions:
 
 ```text
-sqs:SendMessage on my-app-queue
+secretsmanager:GetSecretValue
+dynamodb:GetItem/PutItem/Scan/Query/UpdateItem/DeleteItem
+s3:PutObject/GetObject on photo bucket
+sqs:SendMessage/GetQueueAttributes
+cloudwatch:GetMetricStatistics
 CloudWatch Logs
+X-Ray
 ```
 
-Then create API Gateway HTTP API:
+API Gateway:
 
 ```text
-Route: POST /sighting-events
+HTTP API
+Route: $default
 Integration: my-api-function
-CORS origin: ALB DNS or final domain
-```
-
-Copy API invoke URL into Secrets Manager:
-
-```text
-SIGHTING_EVENT_API_URL=https://<api-id>.execute-api.us-east-1.amazonaws.com/sighting-events
-```
-
-AWS CLI option:
-
-```bash
-aws lambda update-function-code \
-  --function-name my-api-function \
-  --zip-file fileb://build/lambdas/sighting-ingest.zip
+CORS origin: S3 frontend website URL
 ```
 
 ### Console Upload: alert-dispatcher
@@ -162,6 +167,7 @@ Environment:
 ```text
 AWS_REGION=us-east-1
 SNS_TOPIC_ARN=<my-app-topic-arn>
+TABLE_NAME=my-app-table
 ```
 
 IAM permissions:
@@ -190,22 +196,23 @@ aws lambda update-function-code \
   --zip-file fileb://build/lambdas/alert-dispatcher.zip
 ```
 
-## Backend Secret Values After Lambda Is Ready
+## Full Serverless Secret
 
-Update `safetrace/prod/app`:
+Do not update the Phase A `safetrace/prod/app` secret for the full serverless path. Create a separate `safetrace/serverless/app` secret in the Secrets Manager console:
 
 ```json
 {
-  "S3_BUCKET": "group10-alzheimer-photos-<account-id>",
-  "SIGHTING_EVENT_API_URL": "https://<api-id>.execute-api.us-east-1.amazonaws.com/sighting-events",
-  "SIGHTING_EVENT_API_KEY": "<same-key-used-in-lambda>",
-  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/<account-id>/my-app-queue",
-  "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:<account-id>:my-app-topic"
+  "TABLE_NAME": "<DynamoDB table>",
+  "PHOTO_BUCKET": "<private photo bucket>",
+  "SQS_QUEUE_URL": "<alert queue URL>",
+  "SNS_TOPIC_ARN": "<alert topic ARN>",
+  "AWS_REGION": "us-east-1",
+  "CORS_ORIGIN": "*",
+  "AUTH_DEV_EXPOSE_VERIFICATION_CODE": "true",
+  "RESEND_API_KEY": "<optional-resend-key>",
+  "RESEND_FROM_EMAIL": "<optional-resend-sender>",
+  "JWT_SECRET": "<generated>"
 }
 ```
 
-Restart backend after updating secret:
-
-```bash
-docker compose restart backend
-```
+The Lambda API reads this through `SAFETRACE_SECRET_ID`. Set `AUTH_DEV_EXPOSE_VERIFICATION_CODE=false` when you configure real Resend delivery.

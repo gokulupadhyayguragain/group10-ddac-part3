@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FormEvent, useState } from 'react';
 import Shell from '../components/Shell';
+import { apiFetch } from '../lib/api';
 import { saveToken } from '../lib/session';
 import { buttonPrimary, inputClass, labelClass, panelClass } from '../lib/ui';
 
@@ -16,7 +17,7 @@ export default function LoginPage() {
     event.preventDefault();
     setBusy(true);
     setMessage('');
-    const response = await fetch('/api/auth/login', {
+    const response = await apiFetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),

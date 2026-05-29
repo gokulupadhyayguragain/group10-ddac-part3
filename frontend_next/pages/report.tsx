@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import Drawer from '../components/Drawer';
 import Modal from '../components/Modal';
 import Shell from '../components/Shell';
+import { apiFetch } from '../lib/api';
 import { fileToDataUrl } from '../lib/file';
 import { authHeaders } from '../lib/session';
 import { Person } from '../lib/types';
@@ -54,7 +55,7 @@ export default function ReportPage() {
   }, []);
 
   async function loadPersons() {
-    const response = await fetch('/api/persons');
+    const response = await apiFetch('/api/persons');
     setPersons(await response.json());
   }
 
@@ -104,7 +105,7 @@ export default function ReportPage() {
     event.preventDefault();
     setBusy(true);
     setMessage('');
-    const response = await fetch('/api/persons', { method: 'POST', headers: authHeaders(), body: JSON.stringify(payload(form)) });
+    const response = await apiFetch('/api/persons', { method: 'POST', headers: authHeaders(), body: JSON.stringify(payload(form)) });
     const data = await response.json();
     setBusy(false);
     if (!response.ok) return setMessage(data.error || 'Create failed. Login may be required.');
@@ -119,7 +120,7 @@ export default function ReportPage() {
     if (!selected) return;
     setBusy(true);
     setMessage('');
-    const response = await fetch(`/api/persons/${selected.id}`, { method: 'PATCH', headers: authHeaders(), body: JSON.stringify(payload(editForm)) });
+    const response = await apiFetch(`/api/persons/${selected.id}`, { method: 'PATCH', headers: authHeaders(), body: JSON.stringify(payload(editForm)) });
     const data = await response.json();
     setBusy(false);
     if (!response.ok) return setMessage(data.error || 'Update failed.');
@@ -130,7 +131,7 @@ export default function ReportPage() {
   }
 
   async function archivePerson(person: Person) {
-    const response = await fetch(`/api/persons/${person.id}/status`, {
+    const response = await apiFetch(`/api/persons/${person.id}/status`, {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify({ status: 'archived' }),
@@ -144,7 +145,7 @@ export default function ReportPage() {
 
   async function deletePerson(person: Person) {
     if (!window.confirm(`Delete ${person.full_name}? This removes related sightings and alerts.`)) return;
-    const response = await fetch(`/api/persons/${person.id}`, { method: 'DELETE', headers: authHeaders() });
+    const response = await apiFetch(`/api/persons/${person.id}`, { method: 'DELETE', headers: authHeaders() });
     const data = await response.json();
     if (!response.ok) return setMessage(data.error || 'Delete failed.');
     setMessage(`Report #${data.id} deleted.`);

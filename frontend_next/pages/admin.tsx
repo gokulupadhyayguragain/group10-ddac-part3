@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import Modal from '../components/Modal';
 import Shell from '../components/Shell';
+import { apiFetch } from '../lib/api';
 import { authHeaders, readToken } from '../lib/session';
 import { User } from '../lib/types';
 import { buttonPrimary, buttonSecondary, inputClass, labelClass, panelClass } from '../lib/ui';
@@ -51,9 +52,9 @@ export default function AdminPage() {
     }
     const headers = { Authorization: `Bearer ${token}` };
     const [usersResponse, statsResponse, cloudResponse] = await Promise.all([
-      fetch('/api/admin/users', { headers }),
-      fetch('/api/admin/dashboard', { headers }),
-      fetch('/api/admin/cloud-status', { headers }),
+      apiFetch('/api/admin/users', { headers }),
+      apiFetch('/api/admin/dashboard', { headers }),
+      apiFetch('/api/admin/cloud-status', { headers }),
     ]);
     const usersData = await usersResponse.json();
     const statsData = await statsResponse.json();
@@ -68,7 +69,7 @@ export default function AdminPage() {
 
   async function seedDatabase() {
     setBusy(true);
-    const response = await fetch('/api/admin/seed', { method: 'POST', headers: authHeaders() });
+    const response = await apiFetch('/api/admin/seed', { method: 'POST', headers: authHeaders() });
     const data = await response.json();
     setBusy(false);
     if (!response.ok) return setMessage(data.error || 'Seed failed.');
@@ -85,7 +86,7 @@ export default function AdminPage() {
     event.preventDefault();
     if (!selected) return;
     setBusy(true);
-    const response = await fetch(`/api/admin/users/${selected.id}`, {
+    const response = await apiFetch(`/api/admin/users/${selected.id}`, {
       method: 'PATCH',
       headers: authHeaders(),
       body: JSON.stringify(editForm),
