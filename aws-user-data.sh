@@ -1,7 +1,7 @@
 #!/bin/bash
 # ==============================================================================
 # SafeTrace EC2 User Data Provisioning Script
-# Targets: Ubuntu Server 22.04 / 24.04 LTS
+# Targets: Ubuntu Server LTS
 # Description: Automates the setup of Docker, Docker Compose, Git, clones
 #              the SafeTrace repository, configures the environment, and
 #              launches the full-stack containerised application.
@@ -51,6 +51,17 @@ apt-get update -y
 # 2. Install Git and Docker
 echo "Installing Git and Docker..."
 apt-get install -y git docker.io curl ca-certificates
+apt-get clean
+rm -rf /var/lib/apt/lists/*
+
+echo "Checking root disk size..."
+df -h /
+ROOT_GB=$(df -BG / | awk 'NR==2 { gsub("G", "", $2); print $2 }')
+if [ "${ROOT_GB:-0}" -lt 12 ]; then
+    echo "ERROR: root disk is ${ROOT_GB}GiB. SafeTrace Docker builds need at least 16GiB root EBS volume."
+    echo "Increase the EC2 root volume to 16GiB, grow the filesystem, then rerun this script."
+    exit 1
+fi
 
 # 3. Start and Enable Docker Service
 echo "Enabling and starting Docker..."
@@ -104,9 +115,12 @@ chmod 600 "$ENV_FILE"
 # 8. Run App Containers
 echo "Launching SafeTrace Docker Compose containers..."
 cd "$REPO_DIR"
+df -h /
 docker compose down --remove-orphans || true
 docker builder prune -af || true
-docker system prune -af || true
+docker system prune -af --volumes || true
+rm -rf /root/.npm /home/ubuntu/.npm /tmp/* /var/tmp/* || true
+df -h /
 docker compose config
 docker compose up --build -d
 docker compose ps

@@ -34,6 +34,16 @@ Stop local containers:
 docker compose --profile local-db down -v
 ```
 
+## Public VM Smoke Test
+
+Use this only on a throwaway public Ubuntu VM to prove the app opens without RDS/Secrets Manager:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/gokulupadhyayguragain/group10-ddac-part3/main/aws-user-data-local-test.sh | sudo bash
+```
+
+Open `http://<public-ip>`. For production, use `aws-user-data.sh` with RDS and Secrets Manager.
+
 ## Production Secrets
 
 For EC2 production, `.env` should contain only:

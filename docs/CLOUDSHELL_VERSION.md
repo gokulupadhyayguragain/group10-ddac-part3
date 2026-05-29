@@ -386,6 +386,16 @@ fi
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
 apt-get install -y git docker.io curl ca-certificates
+apt-get clean
+rm -rf /var/lib/apt/lists/*
+
+df -h /
+ROOT_GB=$(df -BG / | awk 'NR==2 { gsub("G", "", $2); print $2 }')
+if [ "${ROOT_GB:-0}" -lt 12 ]; then
+    echo "ERROR: root disk is ${ROOT_GB}GiB. SafeTrace Docker builds need at least 16GiB root EBS volume."
+    exit 1
+fi
+
 systemctl enable --now docker
 docker --version
 
@@ -418,9 +428,12 @@ chown ubuntu:ubuntu "$REPO_DIR/.env"
 chmod 600 "$REPO_DIR/.env"
 
 cd "$REPO_DIR"
+df -h /
 docker compose down --remove-orphans || true
 docker builder prune -af || true
-docker system prune -af || true
+docker system prune -af --volumes || true
+rm -rf /root/.npm /home/ubuntu/.npm /tmp/* /var/tmp/* || true
+df -h /
 docker compose config
 docker compose up --build -d
 docker compose ps
@@ -454,6 +467,11 @@ export AMI_ID=$(aws ec2 describe-images \
   --query 'sort_by(Images, &CreationDate)[-1].ImageId' \
   --output text)
 
+export ROOT_DEVICE=$(aws ec2 describe-images \
+  --image-ids "$AMI_ID" \
+  --query 'Images[0].RootDeviceName' \
+  --output text)
+
 export USER_DATA_B64=$(base64 -w0 safetrace-user-data.sh 2>/dev/null || base64 safetrace-user-data.sh | tr -d '\n')
 
 cat > launch-template-data.json <<EOF
@@ -462,6 +480,16 @@ cat > launch-template-data.json <<EOF
   "InstanceType": "t3.micro",
   "IamInstanceProfile": { "Name": "${INSTANCE_PROFILE}" },
   "SecurityGroupIds": ["${APP_SG}"],
+  "BlockDeviceMappings": [
+    {
+      "DeviceName": "${ROOT_DEVICE}",
+      "Ebs": {
+        "VolumeSize": 30,
+        "VolumeType": "gp3",
+        "DeleteOnTermination": true
+      }
+    }
+  ],
   "UserData": "${USER_DATA_B64}",
   "TagSpecifications": [
     {
@@ -557,7 +585,10 @@ Target group still shows HTTP:3000:
   create/attach the port 80 target group; do not use 3000 with this deployment
 
 Docker build says no space left on device:
-  run docker cleanup, pull the optimized Dockerfiles, or increase the EC2 root EBS volume to 16GB
+  root disk is too small; launch with 30GiB root EBS or increase the volume and grow the filesystem
+
+Backend exits immediately on a public test VM:
+  production user-data expects Secrets Manager/RDS; use aws-user-data-local-test.sh for a throwaway public VM
 ```
 
 ## 11. Task 2 Serverless Values

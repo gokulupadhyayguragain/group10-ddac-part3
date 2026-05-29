@@ -2,7 +2,7 @@ FROM node:20-alpine AS deps
 ENV NEXT_TELEMETRY_DISABLED=1
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --no-audit --no-fund && npm cache clean --force
 
 FROM node:20-alpine AS builder
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -10,7 +10,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY package*.json ./
 COPY . .
-RUN npm run build && rm -rf .next/cache
+RUN npm run build && rm -rf .next/cache /root/.npm /tmp/*
 
 FROM node:20-alpine AS runner
 ENV NODE_ENV=production

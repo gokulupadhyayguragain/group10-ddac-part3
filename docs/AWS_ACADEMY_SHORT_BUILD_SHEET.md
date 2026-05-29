@@ -246,8 +246,9 @@ listener HTTPS 443 -> optional ACM certificate -> forward to my-app-tg
 
 ```text
 my-app-lt
-AMI: Ubuntu Server 22.04 or 24.04 LTS
+AMI: Ubuntu Server LTS
 instance type: t3.micro
+root EBS volume: 16 GiB minimum, 30 GiB recommended while building on-instance
 network: do not auto-assign public IP
 security group: app-sg
 IAM instance profile: LabInstanceProfile or my-app-ec2-role
@@ -255,6 +256,13 @@ user data: below
 ```
 
 User data runs only on first boot. If you edit the launch template user data later, start an ASG instance refresh or terminate the old instances so new ones launch with the new script.
+
+This production user data expects AWS Secrets Manager and RDS. If you are only testing on a separate public VM, use the local smoke-test script instead:
+
+```bash
+#!/bin/bash
+curl -fsSL https://raw.githubusercontent.com/gokulupadhyayguragain/group10-ddac-part3/main/aws-user-data-local-test.sh | sudo bash
+```
 
 Minimal user data, recommended:
 
@@ -302,6 +310,16 @@ fi
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
 apt-get install -y git docker.io curl ca-certificates
+apt-get clean
+rm -rf /var/lib/apt/lists/*
+
+df -h /
+ROOT_GB=$(df -BG / | awk 'NR==2 { gsub("G", "", $2); print $2 }')
+if [ "${ROOT_GB:-0}" -lt 12 ]; then
+    echo "ERROR: root disk is ${ROOT_GB}GiB. SafeTrace Docker builds need at least 16GiB root EBS volume."
+    exit 1
+fi
+
 systemctl enable --now docker
 docker --version
 
@@ -334,9 +352,12 @@ chown ubuntu:ubuntu "$REPO_DIR/.env"
 chmod 600 "$REPO_DIR/.env"
 
 cd "$REPO_DIR"
+df -h /
 docker compose down --remove-orphans || true
 docker builder prune -af || true
-docker system prune -af || true
+docker system prune -af --volumes || true
+rm -rf /root/.npm /home/ubuntu/.npm /tmp/* /var/tmp/* || true
+df -h /
 docker compose config
 docker compose up --build -d
 docker compose ps
@@ -442,7 +463,10 @@ user-data stops before Docker:
   NAT route is missing or apt/GitHub/Docker Hub/npm cannot be reached
 
 Docker build fails with no space left:
-  run docker cleanup, use the optimized multi-stage Dockerfiles, or increase root EBS to 16GB
+  use a 16GiB minimum root EBS volume; 30GiB is recommended for easy demos
+
+Backend exits immediately on a public test VM:
+  you used the production script without RDS/Secrets Manager access; rerun with aws-user-data-local-test.sh
 
 backend container restarts:
   DATABASE_URL, Secrets Manager IAM, or RDS security group is wrong
